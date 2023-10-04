@@ -1,1 +1,3 @@
-  const Color=()=
+export const color = () => {
+     
+   }
