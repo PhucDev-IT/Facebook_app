@@ -16,7 +16,10 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import RadioGroup from 'react-native-radio-buttons-group';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import color from '../../color/color'
-const DangKy = () => {
+const DangKy = ({ navigation }) => {
+    const HanldeBack = () => {
+        navigation.navigate("DangKy");
+     }
     //Custom radio button choose gender
     const radioButtons = useMemo(() => ([
         {
@@ -58,7 +61,10 @@ const DangKy = () => {
     return (
         <ScrollView style={styles.container}>
             <View style={styles.topBack}>
-                <TouchableOpacity>
+                <TouchableOpacity
+                 
+                onMagicTap={HanldeBack}
+                >
                     <Ionicons name="arrow-back-sharp" size={24} color="black" />
                 </TouchableOpacity>
             </View>
