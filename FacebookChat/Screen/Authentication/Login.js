@@ -11,7 +11,10 @@ import { FontAwesome5 } from "@expo/vector-icons";
 const Login = ({ navigation }) => {
     handlerCreate = () => {
         navigation.navigate("DangKy");
-      }
+  }
+  const DangNhap = () => {
+    navigation.navigate("Bottomnavigate");
+   }
   return (
     <View style={styles.container}>
       <View style={styles.topBack}>
@@ -34,7 +37,9 @@ const Login = ({ navigation }) => {
           placeholder="Nhập mật khẩu"
           style={styles.txtName}
               ></TextInput>
-              <TouchableOpacity style={styles.button}>
+        <TouchableOpacity
+           onPress={DangNhap}
+          style={styles.button}>
                   <Text style={{ color:'white',fontSize:20}}>Đăng Nhập</Text>
               </TouchableOpacity>
               <TouchableOpacity>
