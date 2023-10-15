@@ -1,6 +1,6 @@
 export default{
    background: '',
-   primary:'',
+   primary:'#3b5998',
    white:'#ffffff',
    placeholderTextColor: "#BBBBBB"
    }

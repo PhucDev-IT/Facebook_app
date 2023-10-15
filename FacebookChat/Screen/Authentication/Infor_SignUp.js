@@ -16,10 +16,18 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import RadioGroup from 'react-native-radio-buttons-group';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import color from '../../color/color'
+
 const DangKy = ({ navigation }) => {
+
+    const handlerContinue = () => {
+        navigation.navigate("InputAccount_SignUp");
+  }
+  const handlerHaveAccount = () => {
+    navigation.navigate("Login");
+}
     const HanldeBack = () => {
-        navigation.navigate("DangKy");
-     }
+        navigation.navigate("Login");
+    }
     //Custom radio button choose gender
     const radioButtons = useMemo(() => ([
         {
@@ -62,9 +70,7 @@ const DangKy = ({ navigation }) => {
         <ScrollView style={styles.container}>
             <View style={styles.topBack}>
                 <TouchableOpacity
-                 
-                onMagicTap={HanldeBack}
-                >
+                    onPress={HanldeBack}>
                     <Ionicons name="arrow-back-sharp" size={24} color="black" />
                 </TouchableOpacity>
             </View>
@@ -87,7 +93,6 @@ const DangKy = ({ navigation }) => {
                         style={styles.input}
                     />
                 </View>
-
                 <View>
 
                     {showPicker && (
@@ -103,13 +108,11 @@ const DangKy = ({ navigation }) => {
                         <Pressable onPress={isShowDatePicker}>
                             <TextInput
                                 placeholder='Ngày sinh'
-                                value={dateOfBirth}
                                 placeholderTextColor={color.placeholderTextColor}
                                 editable={false}
-                                style={[styles.input, { width: '100%' }]} />
+                                style={[styles.input, { width: '100%' ,color:'black'}]} >{dateOfBirth}</TextInput>
                         </Pressable>
                     )}
-
 
                 </View>
 
@@ -121,14 +124,16 @@ const DangKy = ({ navigation }) => {
                         selectedId={selectedId}
                         layout='row' />
                 </View>
-                <TouchableOpacity>
+                <TouchableOpacity
+                onPress={handlerContinue}
+                >
                     <View style={styles.btnContinue}>
                         <Text style={{ color: 'white', fontSize: 16, fontWeight: 500 }}>Tiếp</Text>
                     </View>
                 </TouchableOpacity>
 
                 <View style={styles.bottom}>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={handlerHaveAccount}>
                         <Text style={{ fontSize: 16, color: '#1f0bd4' }}>Bạn đã có tài khoản ư?</Text>
                     </TouchableOpacity>
                 </View>
