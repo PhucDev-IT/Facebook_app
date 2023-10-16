@@ -18,15 +18,13 @@ const Login = ({ navigation }) => {
 
   //Xử lý đăng nhập
   const [userName, setUserName] = useState('');
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState('');
 
-  const login = async (userName, password) => {
+  const login = async () => {
     try {
-      await firebase.auth().signInWithEmailAndPassword(userName, password);
+      await firebase.auth().signInWithEmailAndPassword(userName,password);
       navigation.navigate("Bottomnavigate");
     } catch (error) {
-      console.log('userName:', userName);
-      console.log('password:', password);
       alert(error.messega)
     }
   }
