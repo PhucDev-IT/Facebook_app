@@ -18,7 +18,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import color from '../../color/color'
 const DangKy = ({ navigation }) => {
     const HanldeBack = () => {
-        navigation.navigate("DangKy");
+        navigation.navigate("Login");
      }
     //Custom radio button choose gender
     const radioButtons = useMemo(() => ([
@@ -63,7 +63,7 @@ const DangKy = ({ navigation }) => {
             <View style={styles.topBack}>
                 <TouchableOpacity
                  
-                onMagicTap={HanldeBack}
+                onPress={HanldeBack}
                 >
                     <Ionicons name="arrow-back-sharp" size={24} color="black" />
                 </TouchableOpacity>
