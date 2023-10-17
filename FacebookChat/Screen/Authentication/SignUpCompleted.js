@@ -2,7 +2,7 @@ import { View, StyleSheet, Text, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import color from '../../color/color';
-import Navigeta_Screen from '../Navigeta_Screen';
+
 const SignUpCompleted = ({ navigation }) => {
     const handleLogin = () => {
          navigation.navigate("Login")

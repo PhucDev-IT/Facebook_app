@@ -20,34 +20,31 @@ const InputAccount_SignUp = ({ navigation }) => {
     }
 
     //Đăng ký tài khoản 
-   const registerUser = async () => {
-        await firebase.auth().createUserWithEmailAndPassword(email, password)
-            .then(() => {
-                firebase.auth().currentUser.sendEmailVerification({
-                    handleCodeInApp: true,
-                    url: "https://facebookchat-f8fb6.firebaseapp.com",
-                })
-                    .then(() => {
-                        navigation.navigate("SignUpCompleted")
-                    }).catch((error) => {
-                        alert("Tài khoản đã tồn tại");
-                        alert(error.message)
-                    })
-                    .then(() => {
-                        firebase.firestore().collection('users')
-                            .doc(firebase.auth().currentUser.uid)
-                            .set({
-                                FirstName:firstName,
-                                LastName:lastName,
-                                
-                            })
-                    })
-                    .catch((error) => {
-                        alert(error.message)
-                    })
-            })
-    }
-
+    const registerUser = async () => {
+        try {
+          await firebase.auth().createUserWithEmailAndPassword(email, password);
+          
+          // Chờ tài khoản được tạo xong và xác minh email
+          await firebase.auth().currentUser.sendEmailVerification({
+            handleCodeInApp: true,
+            url: "https://facebookchat-f8fb6.firebaseapp.com",
+          });
+          
+          // Sau khi xác minh email và tài khoản được tạo, thì ghi dữ liệu vào Firestore
+          await firebase.firestore().collection('users')
+            .doc(firebase.auth().currentUser.uid)
+            .set({
+              FirstName: firstName,
+              LastName: lastName,
+            });
+      
+          // Chuyển đến màn hình "SignUpCompleted"
+          navigation.navigate("SignUpCompleted");
+        } catch (error) {
+          alert(error.message);
+        }
+      }
+      
 
     return (
         <ScrollView style={styles.container}>
