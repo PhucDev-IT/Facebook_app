@@ -20,7 +20,12 @@ import color from '../../color/color'
 const Infor_SignUp = ({ navigation }) => {
 
     const handlerContinue = () => {
-        navigation.navigate("InputAccount_SignUp", dataUser);
+        if(firstName.trim().length===0 || lastName.trim().length==0 || dateOfBirth.trim().length==0 || selectedId == null){
+            alert("Vui lòng nhập đầy đủ thông tin");
+        }else{
+            navigation.navigate("InputAccount_SignUp", dataUser);
+        }
+    
     }
     const handlerHaveAccount = () => {
         navigation.navigate("Login");

@@ -14,7 +14,7 @@ const Navigeta_Screen = (props) => {
       flex: 1
     }}>
       <Stack.Navigator
-        initialRouteName= "Login"
+        initialRouteName= "Bottomnavigate"
         screenOptions={{ headerShown: false }}
       >
 

@@ -21,6 +21,10 @@ const InputAccount_SignUp = ({ navigation }) => {
 
     //Đăng ký tài khoản 
     const registerUser = async () => {
+        if(email.trim().length===0 || password.trim().length===0){
+            alert("Không thể để trống tài khoản và mật khẩu");
+            return;
+        }
         try {
           await firebase.auth().createUserWithEmailAndPassword(email, password);
           
