@@ -16,17 +16,21 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import RadioGroup from 'react-native-radio-buttons-group';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import color from '../../color/color'
+import { format } from 'date-fns'; // Sử dụng thư viện date-fns để định dạng ngày
+
 
 const Infor_SignUp = ({ navigation }) => {
 
+
     const handlerContinue = () => {
-        if(firstName.trim().length===0 || lastName.trim().length==0 || dateOfBirth.trim().length==0 || selectedId == null){
+        if (firstName.trim().length === 0 || lastName.trim().length == 0 || formattedDate.trim().length == 0 || selectedId == null) {
             alert("Vui lòng nhập đầy đủ thông tin");
-        }else{
+        } else {
+              
             navigation.navigate("InputAccount_SignUp", dataUser);
         }
-    
     }
+
     const handlerHaveAccount = () => {
         navigation.navigate("Login");
     }
@@ -34,15 +38,16 @@ const Infor_SignUp = ({ navigation }) => {
         navigation.navigate("Login");
     }
 
-    const [firstName,setFirstName] = useState('');
-    const [lastName,setLastName] = useState('');
-    
-
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [gender, setGender] = useState('');
+    const [date, setDate] = useState(new Date());
+    const formattedDate = format(date, 'dd/MM/yyyy'); 
     const dataUser = {
-        firstName:firstName,
-        lastName:lastName,
-        birthOfDate:dateOfBirth,
-        gender:selectedId
+        firstName: firstName,
+        lastName: lastName,
+        birthOfDate: formattedDate,
+        gender: gender
     }
 
 
@@ -60,15 +65,22 @@ const Infor_SignUp = ({ navigation }) => {
         }
     ]), []);
     const [selectedId, setSelectedId] = useState();
+    ;
+
+    const onSelect = (radioButtons) => {
+        setSelectedId(radioButtons); // Cập nhật giá trị đã chọn bằng Hooks
+        setGender(radioButtons);
+      
+    }
+
 
     //Custom datepicker
-
     const isShowDatePicker = () => {
         setShowPicker(!showPicker)
     }
-    const [date, setDate] = useState(new Date())
+    
     const [showPicker, setShowPicker] = useState(false)
-    const [dateOfBirth, setDateOfBirth] = useState("")
+
     //Nhận giá trị ngày được chọn
     const onChange = ({ type }, selectedDate) => {
         if (type == "set") {
@@ -101,14 +113,14 @@ const Infor_SignUp = ({ navigation }) => {
                 <View style={styles.fullName}>
                     <TextInput
                         placeholder='Họ'
-                        onChangeText={(text)=>setFirstName(text)}
+                        onChangeText={(text) => setFirstName(text)}
                         placeholderTextColor={color.placeholderTextColor}
                         style={styles.input}
                     />
 
                     <TextInput
                         placeholder='Tên'
-                        onChangeText={(text)=>setLastName(text)}
+                        onChangeText={(text) => setLastName(text)}
                         placeholderTextColor={color.placeholderTextColor}
                         style={styles.input}
                     />
@@ -130,7 +142,7 @@ const Infor_SignUp = ({ navigation }) => {
                                 placeholder='Ngày sinh'
                                 placeholderTextColor={color.placeholderTextColor}
                                 editable={false}
-                                style={[styles.input, { width: '100%', color: 'black' }]} >{dateOfBirth}</TextInput>
+                                style={[styles.input, { width: '100%', color: 'black' }]} >{formattedDate}</TextInput>
                         </Pressable>
                     )}
 
@@ -140,8 +152,9 @@ const Infor_SignUp = ({ navigation }) => {
                     <Text style={{ fontSize: 14, margin: 10 }}>Giới tính</Text>
                     <RadioGroup
                         radioButtons={radioButtons}
-                        onPress={setSelectedId}
+                        onPress={onSelect}
                         selectedId={selectedId}
+                    
                         layout='row' />
                 </View>
                 <TouchableOpacity

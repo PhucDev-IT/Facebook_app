@@ -9,7 +9,7 @@ import React, { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { firebase } from '../../config'
-
+import Loading_Animation from "../../component/Loading_Animation";
 
 const Login = ({ navigation }) => {
   handlerCreate = () => {
@@ -19,12 +19,16 @@ const Login = ({ navigation }) => {
   //Xử lý đăng nhập
   const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading,setIsLoading] = useState(false);
 
   const login = async () => {
     try {
+      setIsLoading(true)
       await firebase.auth().signInWithEmailAndPassword(userName,password);
       navigation.navigate("Bottomnavigate");
+      setIsLoading(false)
     } catch (error) {
+      setIsLoading(false)
       alert(error.messega)
     }
   }
@@ -39,6 +43,7 @@ const Login = ({ navigation }) => {
       <View style={styles.Body}>
         <FontAwesome5 name="facebook" size={74} color="blue" />
       </View>
+      
       <View style={styles.Nhap}>
         <TextInput
           onChangeText={(username) => setUserName(username)}
@@ -72,7 +77,9 @@ const Login = ({ navigation }) => {
           FaceBook_Chat
         </Text>
       </View>
+      {isLoading?<Loading_Animation/> : null}
     </View>
+    
   );
 };
 export default Login;

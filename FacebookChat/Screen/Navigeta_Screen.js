@@ -7,6 +7,7 @@ import SignUpCompleted from './Authentication/SignUpCompleted.js';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import BootomTabNavigate from './BootomTabNavigate.js';
+import TestScreen from './TestScreen.js';
 const Navigeta_Screen = (props) => {
   const Stack = createNativeStackNavigator();
   return (
@@ -14,10 +15,13 @@ const Navigeta_Screen = (props) => {
       flex: 1
     }}>
       <Stack.Navigator
-        initialRouteName= "Bottomnavigate"
+        initialRouteName= "Login"
         screenOptions={{ headerShown: false }}
       >
-
+        <Stack.Screen
+          name='TestScreen'
+          component={TestScreen}
+        />
         <Stack.Screen
           name='Login'
           component={Login}
