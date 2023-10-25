@@ -16,11 +16,33 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import RadioGroup from 'react-native-radio-buttons-group';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import color from '../../color/color'
-const DangKy = ({ navigation }) => {
+
+const Infor_SignUp = ({ navigation }) => {
+
+    const handlerContinue = () => {
+        navigation.navigate("InputAccount_SignUp", dataUser);
+    }
+    const handlerHaveAccount = () => {
+        navigation.navigate("Login");
+    }
     const HanldeBack = () => {
         navigation.navigate("Login");
      }
-    //Custom radio button choose gender
+
+
+    const [firstName,setFirstName] = useState('');
+    const [lastName,setLastName] = useState('');
+    
+
+    const dataUser = {
+        firstName:firstName,
+        lastName:lastName,
+        birthOfDate:dateOfBirth,
+        gender:selectedId
+    }
+
+
+
     const radioButtons = useMemo(() => ([
         {
             id: '1', // acts as primary key, should be unique and non-empty string
@@ -36,13 +58,13 @@ const DangKy = ({ navigation }) => {
     const [selectedId, setSelectedId] = useState();
 
     //Custom datepicker
-    const [date, setDate] = useState(new Date())
-    const [showPicker, setShowPicker] = useState(false)
-    const [dateOfBirth, setDateOfBirth] = useState("")
+
     const isShowDatePicker = () => {
         setShowPicker(!showPicker)
     }
-
+    const [date, setDate] = useState(new Date())
+    const [showPicker, setShowPicker] = useState(false)
+    const [dateOfBirth, setDateOfBirth] = useState("")
     //Nhận giá trị ngày được chọn
     const onChange = ({ type }, selectedDate) => {
         if (type == "set") {
@@ -62,9 +84,9 @@ const DangKy = ({ navigation }) => {
         <ScrollView style={styles.container}>
             <View style={styles.topBack}>
                 <TouchableOpacity
-                 
                 onPress={HanldeBack}
                 >
+
                     <Ionicons name="arrow-back-sharp" size={24} color="black" />
                 </TouchableOpacity>
             </View>
@@ -77,17 +99,18 @@ const DangKy = ({ navigation }) => {
                 <View style={styles.fullName}>
                     <TextInput
                         placeholder='Họ'
+                        onChangeText={(text)=>setFirstName(text)}
                         placeholderTextColor={color.placeholderTextColor}
                         style={styles.input}
                     />
 
                     <TextInput
                         placeholder='Tên'
+                        onChangeText={(text)=>setLastName(text)}
                         placeholderTextColor={color.placeholderTextColor}
                         style={styles.input}
                     />
                 </View>
-
                 <View>
 
                     {showPicker && (
@@ -103,13 +126,11 @@ const DangKy = ({ navigation }) => {
                         <Pressable onPress={isShowDatePicker}>
                             <TextInput
                                 placeholder='Ngày sinh'
-                                value={dateOfBirth}
                                 placeholderTextColor={color.placeholderTextColor}
                                 editable={false}
-                                style={[styles.input, { width: '100%' }]} />
+                                style={[styles.input, { width: '100%', color: 'black' }]} >{dateOfBirth}</TextInput>
                         </Pressable>
                     )}
-
 
                 </View>
 
@@ -121,14 +142,16 @@ const DangKy = ({ navigation }) => {
                         selectedId={selectedId}
                         layout='row' />
                 </View>
-                <TouchableOpacity>
+                <TouchableOpacity
+                    onPress={handlerContinue}
+                >
                     <View style={styles.btnContinue}>
                         <Text style={{ color: 'white', fontSize: 16, fontWeight: 500 }}>Tiếp</Text>
                     </View>
                 </TouchableOpacity>
 
                 <View style={styles.bottom}>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={handlerHaveAccount}>
                         <Text style={{ fontSize: 16, color: '#1f0bd4' }}>Bạn đã có tài khoản ư?</Text>
                     </TouchableOpacity>
                 </View>
@@ -136,7 +159,7 @@ const DangKy = ({ navigation }) => {
         </ScrollView>
     )
 }
-export default DangKy
+export default Infor_SignUp
 const styles = StyleSheet.create({
     container: {
         flex: 1,
