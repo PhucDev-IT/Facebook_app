@@ -7,13 +7,15 @@ import { TouchableOpacity } from 'react-native';
 import color from '../../color/color';
 import { useRoute } from "@react-navigation/native"
 import { firebase } from '../../config'
-const Banbe = ({ navigation, route }) => {
+const Banbe = ({ navigation }) => {
   const [friendRequests, setFriendRequests] = useState([]);
   const [friendRequestCount, setFriendRequestCount] = useState(0);
 
-  console.log("Dữ liệu truyền vào Banbe:", route.params.data);
- 
+   //Lấy ID người dùng hiện tại
+   const route = useRoute()
   const idUserCurrent = route.params.data.userID;
+  
+
   const handleClickSearch = () => {
     navigation.navigate("SearchFriends", { data:route.params.data })
   }
@@ -56,6 +58,10 @@ const Banbe = ({ navigation, route }) => {
     const updatedFriendRequests = friendRequests.filter((request) => request !== acceptedRequest);
     setFriendRequests(updatedFriendRequests);
     setFriendRequestCount(updatedFriendRequests.length);
+  }
+
+  const handleBack = () =>{
+    navigation.navigate("")
   }
 
 
@@ -137,7 +143,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   labelText: {
-    fontSize: 20,
+    fontSize: 23,
     fontWeight: 'bold'
   },
 })

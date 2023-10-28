@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { firebase } from "../config";
 const SplashScreen = ({ navigation }) => {
   const [isLogin, setIsLogin] = useState(false);
-  const [user, setUser] = useState();
+  const [userID, setUserID] = useState();
   useEffect(() => {
     const checkUserLoginStatus = async () => {
       // Đợi Firebase khởi tạo
@@ -12,21 +12,7 @@ const SplashScreen = ({ navigation }) => {
         if (user) {
           var uid = user.uid;
           setIsLogin(true)
-          //Lấy thông tin người dùng
-          firebase.firestore().collection('users').doc(uid).get()
-            .then((doc) => {
-              if (doc.exists) {
-                const userData = doc.data();
-                setUser(userData)
-              } else {
-                //Người dùng không có trong firestore
-                alert("Có lỗi xảy ra!");
-              }
-            })
-            .catch((error) => {
-              console.log('Lỗi lấy thông tin người dùng: ' + error)
-            })
-
+          setUserID(uid)
           //User chưa đăng nhập
         } else {
           setIsLogin(false);
@@ -34,7 +20,7 @@ const SplashScreen = ({ navigation }) => {
 
         // Sau 2 giây, điều hướng đến màn hình chính hoặc màn hình khác
         setTimeout(() => {
-          { isLogin ? navigation.navigate("Bottomnavigate", userData) : navigation.navigate("Login") }
+          { isLogin ? navigation.navigate("BottomTabNavigate",userID) : navigation.navigate("Login") }
         }, 2000); // 2000ms = 2 giây
       });
     };

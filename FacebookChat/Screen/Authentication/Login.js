@@ -35,7 +35,7 @@ const Login = ({ navigation }) => {
             const userData = doc.data();
 
             setIsLoading(false)
-            navigation.navigate("Bottomnavigate",userData);
+            navigation.navigate("BottomTabNavigate",userData);
           } else {
             // Người dùng không tồn tại trong Firestore
             console.log("Người dùng không tồn tại");

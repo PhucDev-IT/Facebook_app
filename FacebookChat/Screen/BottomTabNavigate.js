@@ -16,14 +16,14 @@ import { SimpleLineIcons } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
-import Story from "../Screen/Story/Story";
-import Infor from "../Screen/Infor/Infor";
-import Home from "../Screen/Home/Home";
-import Chat from "../Screen/Chat/Chat";
-import Banbe from "../Screen/Banbe/Banbe";
+import Story from "./Story/Story";
+import Infor from "./Infor/Infor";
+import Home from "./Home/Home";
+import Chat from "./Chat/Chat";
+import Banbe from "./Banbe/Banbe";
 const Tab = createBottomTabNavigator();
 
-const BootomTabNavigate = ({ navigation, route }) => {
+const BottomTabNavigate = ({ navigation, route }) => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -53,7 +53,7 @@ const BootomTabNavigate = ({ navigation, route }) => {
               <Ionicons
                 name="add-circle"
                 size={focused ? 30 : 27}
-                    color={focused ? "white" : "#888888"}
+                color={focused ? "white" : "#888888"}
               />
             );
           } else if (route.name === "Friend") {
@@ -64,11 +64,11 @@ const BootomTabNavigate = ({ navigation, route }) => {
                 color={focused ? "white" : "#888888"}
               />
             );
-          }else if (route.name === "Infor") {
+          } else if (route.name === "Infor") {
             iconComponent = (
               <Feather
                 name="user"
-                size={focused ? 26: 20}
+                size={focused ? 26 : 20}
                 color={focused ? "white" : "#888888"}
               />
             );
@@ -80,15 +80,18 @@ const BootomTabNavigate = ({ navigation, route }) => {
       <Tab.Screen name="Home"
         initialParams={{ data: route.params }}
         component={Home} />
-      <Tab.Screen name="Chat" component={Chat} />
-      <Tab.Screen name="Story"  component={Story} />
+
+      <Tab.Screen name="Chat"
+        initialParams={{ navigation, data: route.params }}
+        component={Chat} />
+      <Tab.Screen name="Story" component={Story} />
       <Tab.Screen name="Friend"
-       initialParams={{ data: route.params }}
-       component={Banbe} />
+        initialParams={{ data: route.params }}
+        component={Banbe} />
       <Tab.Screen name="Infor" component={Infor}
         initialParams={{ data: route.params }} />
     </Tab.Navigator>
   );
 };
-export default BootomTabNavigate;
+export default BottomTabNavigate;
 const styles = StyleSheet.create({});

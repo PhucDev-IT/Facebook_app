@@ -5,7 +5,9 @@ import { TouchableOpacity } from 'react-native'
 const Layout_Message = (props) => {
     return (
         <View style={styles.container}>
-            <TouchableOpacity style={styles.btn}>
+            <TouchableOpacity 
+            onPress={() => props.navigation.navigate("ChatDetails")}
+            style={styles.btn}>
                 <View style={styles.left}>
                     <Image style={styles.img} source={{ uri: props.avt }} />
                 </View>

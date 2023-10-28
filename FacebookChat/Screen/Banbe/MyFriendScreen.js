@@ -1,8 +1,8 @@
-import { StyleSheet, Text, View, TouchableOpacity, TextInput,FlatList } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, FlatList } from 'react-native'
 import { useState, useEffect } from 'react'
 import Layout_MyFriend from '../../component/Layout_MyFriend'
 import { Ionicons } from "@expo/vector-icons";
-import {firebase} from '../../config'
+import { firebase } from '../../config'
 import { useRoute } from "@react-navigation/native"
 const MyFriendScreen = ({ navigation }) => {
 
@@ -28,10 +28,28 @@ const MyFriendScreen = ({ navigation }) => {
     }, [idUser]);
 
 
+    const handleBack = () => {
+        navigation.goBack();
+    }
+
+    //Tìm bạn bè
+    const handleSearch = () => {
+        try {
+            const querySnapshot = firebase.firestore().collection('Friends').doc(idUser).collection('userFriends').orderBy('DisplayName')
+                .startAt(textInput).endAt(textInput + '\uf8ff')
+                .get();
+            const documents = querySnapshot.docs.map(doc => doc.data());
+            setMyFriends(documents)
+        } catch (error) {
+            console.error('Error fetching data: ', error);
+        }
+    }
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <TouchableOpacity >
+                <TouchableOpacity
+                    onPress={handleBack}>
                     <Ionicons name="arrow-back-sharp" size={30} color="black" />
                 </TouchableOpacity>
                 <Text style={styles.title}>Bạn bè</Text>
@@ -42,6 +60,7 @@ const MyFriendScreen = ({ navigation }) => {
                     onChangeText={text => setTextInput(text)}
                     value={textInput}
                     placeholder="Tìm kiếm bạn bè"
+                    onSubmitEditing={handleSearch}
                 />
             </View>
 

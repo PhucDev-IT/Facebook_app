@@ -1,12 +1,42 @@
 import { StyleSheet, Text, View, FlatList } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import CircleUser from '../../component/CircleUser'
 import { TouchableOpacity } from 'react-native'
 import { AntDesign } from '@expo/vector-icons';
 import { ScrollView } from 'react-native';
 import Layout_Message from '../../component/Layout_Message';
 import { useState } from 'react';
-const Chat = () => {
+import { GiftedChat } from 'react-native-gifted-chat'
+import {firebase} from '../../config'
+const Chat = ({ navigation, route }) => {
+  const [users, setListUser] = useState([]);
+  const [message, setListMessages] = useState([]);
+
+  const userCurrent = route.params.data;
+
+
+  //Lấy 20 bạn bè để làm icon đang onl :)
+  const getListUser = async () => {
+    try {
+      
+    }catch(error){
+      console.log("Có lỗi khi lấy user: "+error)
+    }
+  }
+
+  //Lấy danh sách tin nhắn
+  const getListMessage = async ()=>{
+    try{
+      var query = firebase.firestore().collection('chats').where('user1','==',userCurrent.userID);
+      var query2 = firebase.firestore().collection('chats').where('user2','==',userCurrent.userID);
+
+      query.get()
+
+    }catch(error){
+      console.log("Có lỗi khi lấy user: "+error)
+    }
+  }
+
 
   const [friends, setFriends] = useState([
     {
@@ -71,10 +101,11 @@ const Chat = () => {
         </FlatList>
       </View>
       <View style={styles.body}>
+
         <FlatList
           data={friends}
           keyExtractor={item => item.name}
-          renderItem={({ item }) => <Layout_Message nameUser={item.name} avt={item.url} lastMessage={item.text} />}>
+          renderItem={({ item }) => <Layout_Message nameUser={item.name} avt={item.url} lastMessage={item.text} navigation={navigation} />}>
         </FlatList>
       </View>
 

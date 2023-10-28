@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar } from 'react-native';
-import Navigeta_Screen from './Screen/Navigeta_Screen';
+import Navigate_Screen from './Screen/Navigate_Screen';
 import React, { useState, useEffect } from "react";
 import { firebase } from './config'
 import { useNavigation } from '@react-navigation/native';
@@ -28,7 +28,7 @@ export default function App() {
         backgroundColor="black"
         hidden={hidden}
       />
-      {user ? <Navigeta_Screen screen={"Bottomnavigate"} /> : <Navigeta_Screen screen={"Login"} />}
+      {user ? <Navigate_Screen screen={"BottomTabNavigate"} /> : <Navigate_Screen screen={"Login"} />}
     </SafeAreaView>
   )
 

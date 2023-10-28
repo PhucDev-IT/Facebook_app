@@ -6,11 +6,12 @@ import InputAccount_SignUp from './Authentication/InputAccount_SignUp.js'
 import SignUpCompleted from './Authentication/SignUpCompleted.js';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import BootomTabNavigate from './BootomTabNavigate.js';
+import BottomTabNavigate from './BottomTabNavigate.js';
 import TestScreen from './TestScreen.js';
-import SearchFriends from './SearchFriends.js';
+import SearchFriends from '../Screen/Banbe/SearchFriends.js';
 import SplashScreen from './SplashScreen.js';
 import MyFriendScreen from './Banbe/MyFriendScreen.js';
+import ChatDetails from './Chat/ChatDetails.js';
 const Navigeta_Screen = (props) => {
   const Stack = createNativeStackNavigator();
   return (
@@ -38,6 +39,12 @@ const Navigeta_Screen = (props) => {
         />
 
         <Stack.Screen
+          initialParams={{ data: props.params }}
+          name='ChatDetails'
+          component={ChatDetails}
+        />
+
+        <Stack.Screen
           name='Login'
           component={Login}
         />
@@ -55,8 +62,8 @@ const Navigeta_Screen = (props) => {
           component={SignUpCompleted}
         />
         <Stack.Screen
-          name='Bottomnavigate'
-          component={BootomTabNavigate}
+          name='BottomTabNavigate'
+          component={BottomTabNavigate}
         />
       </Stack.Navigator>
     </NavigationContainer>
