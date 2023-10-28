@@ -8,6 +8,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import BootomTabNavigate from './BootomTabNavigate.js';
 import Add_articles from './Home/Add_articles.js';
+import TestScreen from './TestScreen.js';
+import EditProfile from './Home/EditProfile.js';
 const Navigeta_Screen = (props) => {
   const Stack = createNativeStackNavigator();
   return (
@@ -18,7 +20,10 @@ const Navigeta_Screen = (props) => {
         initialRouteName= "Login"
         screenOptions={{ headerShown: false }}
       >
-
+        <Stack.Screen
+          name='TestScreen'
+          component={TestScreen}
+        />
         <Stack.Screen
           name='Login'
           component={Login}
@@ -43,6 +48,10 @@ const Navigeta_Screen = (props) => {
         <Stack.Screen
           name='Bottomnavigate'
           component={BootomTabNavigate}
+        />
+       <Stack.Screen
+          name='EditProfile'
+          component={EditProfile}
         />
       </Stack.Navigator>
     </NavigationContainer>

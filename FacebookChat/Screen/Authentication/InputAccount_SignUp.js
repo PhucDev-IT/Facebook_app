@@ -8,46 +8,71 @@ import color from '../../color/color'
 import { useRoute } from '@react-navigation/native';
 import Infor_SignUp from './Infor_SignUp'
 import { firebase } from '../../config'
-const InputAccount_SignUp = ({ navigation }) => {
-
-    const route = useRoute();
+import Loading_Animation from "../../component/Loading_Animation";
+import { tr } from 'date-fns/locale';
+const InputAccount_SignUp = ({ navigation,route }) => {
     const { firstName, lastName, birthOfDate, gender } = route.params;
     const [password, setPassword] = useState('')
     const [email, setEmail] = React.useState("");
+    const [isLoading,setIsLoading] = useState(false);
 
     const HanldeBack = () => {
         navigation.navigate("Infor_SignUp");
     }
+    const [avt,setAvatar] = useState('');
+  //Đăng ký tài khoản 
+  const registerUser = async () => {
+        
+    if(email.trim().length===0 || password.trim().length===0){
+        alert("Không thể để trống tài khoản và mật khẩu");
+        return;
+    }
+    setIsLoading(true)
 
-    //Đăng ký tài khoản 
-    const registerUser = async () => {
-        try {
-          await firebase.auth().createUserWithEmailAndPassword(email, password);
-          
-          // Chờ tài khoản được tạo xong và xác minh email
-          await firebase.auth().currentUser.sendEmailVerification({
-            handleCodeInApp: true,
-            url: "https://facebookchat-f8fb6.firebaseapp.com",
-          });
-          
-          // Sau khi xác minh email và tài khoản được tạo, thì ghi dữ liệu vào Firestore
-          await firebase.firestore().collection('users')
-            .doc(firebase.auth().currentUser.uid)
-            .set({
-              FirstName: firstName,
-              LastName: lastName,
-            });
+    if(gender === 1){
+        setAvatar( '../assets/defaultAvt_boy.png');
+    }else{
+        setAvatar('../assets/defaultAvt_girl.jpg');
+    }
+
+    try {
+      await firebase.auth().createUserWithEmailAndPassword(email, password);
       
-          // Chuyển đến màn hình "SignUpCompleted"
-          navigation.navigate("SignUpCompleted");
-        } catch (error) {
-          alert(error.message);
-        }
-      }
+      // Chờ tài khoản được tạo xong và xác minh email
+      await firebase.auth().currentUser.sendEmailVerification({
+        handleCodeInApp: true,
+        url: "https://facebookchat-f8fb6.firebaseapp.com",
+      });
       
+       // Lấy userID của người dùng hiện tại
+    const userID = firebase.auth().currentUser.uid;
+
+      // Sau khi xác minh email và tài khoản được tạo, thì ghi dữ liệu vào Firestore
+      await firebase.firestore().collection('users')
+        .doc(firebase.auth().currentUser.uid)
+        .set({
+          FirstName: firstName,
+          LastName: lastName,
+          Gender: gender,
+          BirthOfDate: birthOfDate,
+          UserName: email,
+          avatar:avt,
+          userID:userID
+        });
+  
+        setIsLoading(false)
+      // Chuyển đến màn hình "SignUpCompleted"
+      navigation.navigate("SignUpCompleted");
+      
+    } catch (error) {
+        setIsLoading(false)
+      alert(error.message);
+    }
+  }
 
     return (
-        <ScrollView style={styles.container}>
+        <View  style={styles.container}>
+            <ScrollView>
             <View style={styles.topBack}>
                 <TouchableOpacity
                     onPress={HanldeBack}>
@@ -86,7 +111,10 @@ const InputAccount_SignUp = ({ navigation }) => {
                     <Text style={{ fontWeight: '500', fontSize: 15 }}>Đăng ký bằng số điện thoại</Text>
                 </TouchableOpacity>
             </View>
+            
         </ScrollView>
+        {isLoading?<Loading_Animation/> : null}
+        </View>
     )
 }
 
@@ -100,7 +128,8 @@ const styles = StyleSheet.create({
     body: {
         flex: 1,
         marginHorizontal: 15,
-        marginTop: 10
+        marginTop: 10,
+        
     },
     topBack: {
         marginTop: 10,

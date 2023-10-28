@@ -33,14 +33,16 @@ import Swiper from "react-native-swiper";
 import * as MediaLibrary from "expo-media-library";
 import { MaterialIcons } from "@expo/vector-icons";
 import Spinner from "react-native-loading-spinner-overlay";
-const Add_articles = ({ navigation }) => {
+import Countries from "./Selected.js";
+const Add_articles = ({ navigation, route }) => {
+  const [user, setUser] = useState(route.params);
   const [Hienthi, setHienthi] = useState(true);
   const HandeHienthi = () => {
     setHienthi(true);
   };
   // back trang chu
   const backTrangchu = () => {
-    navigation.navigate("TrangChu");
+    navigation.navigate("Home");
   };
   // lấy data cua use
   // const [data, setData] = useState(route.params);
@@ -98,7 +100,7 @@ const Add_articles = ({ navigation }) => {
       settable(true);
     }
   };
-  selected
+
   // set lai khi xoa di 1 cai anh
   const XoaAnh = (image, index) => {
     // console.log(image,index)
@@ -139,7 +141,7 @@ const Add_articles = ({ navigation }) => {
       Alert.alert("Access denied");
     }
   };
-
+  
   // cho phép bạn chọn vaof thựo tính nào
   const [selectedOption, setSelectedOption] = useState("16:9");
   const handlePress = (option) => {
@@ -206,7 +208,7 @@ const Add_articles = ({ navigation }) => {
     console.log("vi tri");
   };
   const bootomShetShare2 = () => {
-    choPhepTRuyCapViTri();
+   
     setVisible2(!visible2);
     console.log("bootomshet2");
   };
@@ -234,14 +236,13 @@ const Add_articles = ({ navigation }) => {
             <TouchableOpacity
               style={{
                 flexDirection: "row",
-                backgroundColor: table ? "blue" : "pink",
+                backgroundColor: table ? "blue" : "green",
                 width: "15%",
                 height: "60%",
                 justifyContent: "center",
                 alignItems: "center",
               }}
-              onPress={HanderAxios}
-              // disabled={!table}
+             
             >
               <Text style={{ color: "white" }}>POST</Text>
               <Spinner
@@ -253,16 +254,18 @@ const Add_articles = ({ navigation }) => {
           </View>
           <View style={styles.view1}>
             <View style={styles.view2}>
-              <Image style={styles.img1} />
+              <Image
+                source={{ uri: user.avatar }}
+                style={styles.img1} />
             </View>
             <View style={styles.view5}>
               <View style={styles.view3}>
-                <Text style={styles.txt1}>{/* {data.Hoten} */}</Text>
+                <Text style={styles.txt1}>{user.DisplayName}</Text>
                 <Text style={styles.view4}>{vitri}</Text>
               </View>
               <View style={styles.view6}>
-                <SelectDropdown
-                  // data={}
+              <SelectDropdown
+                  data={Countries}
                   onSelect={(selectedItem, index) => {
                     setPermission(selectedItem.title);
                   }}
@@ -280,7 +283,7 @@ const Add_articles = ({ navigation }) => {
                     return (
                       <FontAwesome
                         name={isOpened ? "chevron-up" : "chevron-down"}
-                        color={"pink"}
+                        color={"#333333"}
                         size={18}
                       />
                     );
@@ -288,7 +291,7 @@ const Add_articles = ({ navigation }) => {
                   dropdownIconPosition={"left"}
                   dropdownStyle={styles.dropdown4DropdownStyle}
                   rowStyle={{
-                    backgroundColor: "pink",
+                    backgroundColor: "#333333",
                   }}
                   rowTextStyle={{
                     color: "white",
@@ -482,7 +485,7 @@ const Add_articles = ({ navigation }) => {
 
               <View style={styles.view10}>
                 <View style={styles.view18}>
-                  <TouchableOpacity onPress={() => handlePress("16:9")}>
+                <TouchableOpacity onPress={() => handlePress("16:9")}>
                     <Text
                       style={{
                         fontSize: 18,
@@ -508,21 +511,14 @@ const Add_articles = ({ navigation }) => {
                       64mp
                     </Text>
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={() => handlePress("3:4")}>
-                    <Text
-                      style={{
+                  <TouchableOpacity onPress={() => handlePress("full")}>
+                    <Text style={{
                         fontSize: 18,
                         color: "white",
-                        opacity: selectedOption === "3:4" ? 1 : 0.5,
+                        opacity: selectedOption === "full" ? 1 : 0.5,
                         fontWeight:
-                          selectedOption === "3:4" ? "bold" : "normal",
-                      }}
-                    >
-                      3:4
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => handlePress("full")}>
-                    <Text style={styles.txt4}>full</Text>
+                          selectedOption === "64mp" ? "bold" : "normal",
+                      }}>full</Text>
                   </TouchableOpacity>
                 </View>
                 <TouchableOpacity
@@ -532,7 +528,7 @@ const Add_articles = ({ navigation }) => {
               </View>
             </View>
           )}
-          {/* {!isView && (
+          {!isView && (
               <View
                 style={{
                   backgroundColor: "transparent",
@@ -542,18 +538,20 @@ const Add_articles = ({ navigation }) => {
                 }}
               >
                 <ImageBackground
-                //   source={{ uri: capturedImage && capturedImage.uri }}
+                  source={{ uri: capturedImage && capturedImage.uri }}
                   style={{
                     flex: 1,
                   }}
                 />
               </View>
-            )} */}
-          <View style={styles.view19}></View>
+            )}
+          <View style={styles.view19}>
+            <Text>haha</Text>
+          </View>
         </View>
       )}
       <BottomSheet visible={visible} onBackdropPress={bootomShetShare}>
-        {/*Bottom Sheet inner View*/}
+   
         <View style={{ flex: 0.6, backgroundColor: "white" }}>
           <Text style={styles.txt7}>Cảm xúc</Text>
           <ScrollView
@@ -645,15 +643,6 @@ const Add_articles = ({ navigation }) => {
           </ScrollView>
         </View>
       </BottomSheet>
-      <BottomSheet
-        visible={visible2}
-        //setting the visibility state of the bottom shee
-        //Toggling the visibility state on the click of the back botton
-        onBackdropPress={bootomShetShare2}
-        //Toggling the visibility state on the clicking out side of the sheet
-      >
-        {/* <DistrictScreen onValueChange={handleValueChange} /> */}
-      </BottomSheet>
     </View>
   );
 };
@@ -669,7 +658,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   view1: {
-    backgroundColor: "pink",
+    backgroundColor: "#333333",
     width: "100%",
     height: 90,
     alignItems: "center",
@@ -711,7 +700,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     justifyContent: "space-around",
   },
-  btns1: {
+  bnts1: {
     width: 120,
     height: 40,
     borderBottomColor: "#339900",
@@ -773,11 +762,11 @@ const styles = StyleSheet.create({
   view11: {
     flex: 1,
     position: "relative",
-    backgroundColor: "pink",
+    backgroundColor: "#33333",
     zIndex: 1,
   },
   view12: {
-    backgroundColor: "#444444",
+    backgroundColor: "#C0C0C0",
     width: "100%",
     height: 600,
     paddingTop: 10,
@@ -800,7 +789,7 @@ const styles = StyleSheet.create({
   view14: {
     width: "100%",
     height: 600,
-    backgroundColor: "pink",
+    backgroundColor: "#33333",
   },
   touch4: {
     width: 40,
@@ -839,7 +828,7 @@ const styles = StyleSheet.create({
     width: "60%",
     height: "20%",
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "space-around",
     marginBottom: 15,
   },
   view19: {
@@ -851,7 +840,7 @@ const styles = StyleSheet.create({
   touch6: {
     width: "100%",
     height: 50,
-    backgroundColor: "pink",
+    backgroundColor: "#33333",
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 1,

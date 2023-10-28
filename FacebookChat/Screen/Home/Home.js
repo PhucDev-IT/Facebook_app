@@ -18,11 +18,13 @@ import { React, useState, useEffect, useRef, memo, useCallback } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import FlatItem from "./FlatItem.js";
-const Home = ({ navigation }) => {
-
+import { firebase } from "../../config.js"
+const Home = ({ navigation, route }) => {
+  const [user, setUser] = useState(route.params.data);
+  // console.log(JSON.stringify(user) + "dtaa");
   const handlerAdd_articles = () => {
-    navigation.navigate("Add_articles");
-  }
+    navigation.navigate("Add_articles", user);
+  };
   const str = () => {
     return (
       <TouchableOpacity
@@ -31,14 +33,14 @@ const Home = ({ navigation }) => {
         }}
         style={styles.creteTin}
       >
-        {/* <Image
-        style={{
-          width: "100%",
-          flex: 0.7,
-          height: "70%",
-        }}
-        source={{ uri: user.Avatar }}
-      ></Image> */}
+        <Image
+          style={{
+            width: "100%",
+            flex: 0.7,
+            height: "70%",
+          }}
+          source={{ uri: user.avatar }}
+        ></Image>
         <View style={styles.tintuc}>
           <Text style={{ alignItems: "center" }}>+</Text>
         </View>
@@ -63,9 +65,15 @@ const Home = ({ navigation }) => {
           </View>
           <View style={styles.thanhngang}></View>
           <View style={styles.thanhbar}>
-            <View style={styles.thanhbar1}></View>
-            <TouchableOpacity style={styles.trangthai}
-               onPress={ handlerAdd_articles}
+            <View style={styles.thanhbar1}>
+              <Image
+                style={styles.thanhbar1}
+                source={{ uri: user.avatar }}
+              ></Image>
+            </View>
+            <TouchableOpacity
+              style={styles.trangthai}
+              onPress={handlerAdd_articles}
             >
               <Text style={{ color: "white" }}>Trạng thái của bạn</Text>
             </TouchableOpacity>
@@ -75,7 +83,7 @@ const Home = ({ navigation }) => {
         </View>
         <FlatList
           horizontal
-          // keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item) => item.id.toString()}
           ListHeaderComponent={str}
           renderItem={({ item }) => {
             return (

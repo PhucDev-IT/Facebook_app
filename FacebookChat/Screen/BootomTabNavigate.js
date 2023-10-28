@@ -21,9 +21,10 @@ import Infor from "./Infor/Infor.js";
 import Home from "./Home/Home.js";
 import Chat from "./Chat/Chat.js";
 import Banbe from "./Banbe/Banbe.js";
+
 const Tab = createBottomTabNavigator();
 
-const BootomTabNavigate = ({ navigation }) => {
+const BootomTabNavigate = ({ navigation, route }) => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -77,11 +78,14 @@ const BootomTabNavigate = ({ navigation }) => {
         },
       })}
     >
-      <Tab.Screen name="Home" component={Home} />
+      <Tab.Screen name="Home"
+        initialParams={{ data: route.params }}
+        component={Home} />
       <Tab.Screen name="Chat" component={Chat} />
       <Tab.Screen name="Story"  component={Story} />
       <Tab.Screen name="Friend" component={Banbe} />
-      <Tab.Screen name="Infor" component={Infor} />
+      <Tab.Screen name="Infor" component={Infor}
+        initialParams={{ data: route.params }} />
     </Tab.Navigator>
   );
 };
