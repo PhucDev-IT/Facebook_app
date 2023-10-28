@@ -13,7 +13,7 @@ const MyFriendScreen = ({ navigation }) => {
     const route = useRoute()
     const idUser = route.params?.userID
 
-    //Lấy danh sách lời mời kết bạn
+    //Lấy danh sách bạn bè
     useEffect(() => {
         const getFriendRequests = async () => {
             const friends = firebase.firestore().collection('Friends').doc(idUser).collection('userFriends')

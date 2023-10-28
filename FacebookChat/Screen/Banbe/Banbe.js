@@ -11,16 +11,16 @@ const Banbe = ({ navigation }) => {
   const [friendRequests, setFriendRequests] = useState([]);
   const [friendRequestCount, setFriendRequestCount] = useState(0);
 
-   //Lấy ID người dùng hiện tại
-   const route = useRoute()
+  //Lấy ID người dùng hiện tại
+  const route = useRoute()
   const idUserCurrent = route.params.data.userID;
-  
+
 
   const handleClickSearch = () => {
-    navigation.navigate("SearchFriends", { data:route.params.data })
+    navigation.navigate("SearchFriends", { data: route.params.data })
   }
 
-  const handleClickMyFriend = ()=>{
+  const handleClickMyFriend = () => {
     navigation.navigate("MyFriendScreen", { userID: idUserCurrent })
   }
 
@@ -60,7 +60,7 @@ const Banbe = ({ navigation }) => {
     setFriendRequestCount(updatedFriendRequests.length);
   }
 
-  const handleBack = () =>{
+  const handleBack = () => {
     navigation.navigate("")
   }
 
@@ -80,8 +80,8 @@ const Banbe = ({ navigation }) => {
             <Text style={styles.textOption}>Gợi ý</Text>
           </TouchableOpacity>
           <TouchableOpacity
-          onPress={handleClickMyFriend}
-          style={styles.btn_option_elip}>
+            onPress={handleClickMyFriend}
+            style={styles.btn_option_elip}>
             <Text style={styles.textOption}>Bạn bè</Text>
           </TouchableOpacity>
         </View>

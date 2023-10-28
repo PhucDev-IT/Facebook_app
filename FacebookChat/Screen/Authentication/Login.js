@@ -22,7 +22,7 @@ const Login = ({ navigation }) => {
   const DangNhap = async (email, matkhau) => {
     try {
       setIsLoading(true);
-      
+
       const userCredential = await firebase
         .auth()
         .signInWithEmailAndPassword(email, matkhau);
@@ -30,26 +30,25 @@ const Login = ({ navigation }) => {
       // Đăng nhập thành công, user chứa thông tin người dùng đã đăng nhập
       const userDocRef = firebase.firestore().collection("users").doc(userID);
       userDocRef.get().then((doc) => {
-            if (doc.exists) {
-            // Dữ liệu người dùng được tìm thấy
-            const userData = doc.data();
-
-            setIsLoading(false)
-            navigation.navigate("BottomTabNavigate",userData);
-          } else {
-            // Người dùng không tồn tại trong Firestore
-            console.log("Người dùng không tồn tại");
-          }
-        })
+        if (doc.exists) {
+          // Dữ liệu người dùng được tìm thấy
+          const userData = doc.data();
+          setIsLoading(false)
+          navigation.navigate("BottomTabNavigate", userData);
+        } else {
+          // Người dùng không tồn tại trong Firestore
+          alert("Người dùng không tồn tại");
+        }
+      })
         .catch((error) => {
           setIsLoading(false)
           console.error("Lỗi khi truy vấn dữ liệu người dùng:", error);
         });
-      
+
     } catch (error) {
 
       setIsLoading(false)
-      alert("tài khoản hoặc mật khẩu không chính xác")
+      alert("Tài khoản hoặc mật khẩu không chính xác")
       console.error("Lỗi khi đăng nhập:", error);
       throw error; // Xử lý lỗi hoặc trả về lỗi
     }
@@ -113,7 +112,7 @@ const Login = ({ navigation }) => {
           <Text style={{ color: "white", fontSize: 20 }}>Đăng Nhập</Text>
         </TouchableOpacity>
         <TouchableOpacity>
-          <Text style={{ fontSize: 17 }}>Bạn quyên mật khẩu ư?</Text>
+          <Text style={{ fontSize: 17 }}>Bạn quên mật khẩu ư?</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.botm}>
