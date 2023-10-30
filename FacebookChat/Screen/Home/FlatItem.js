@@ -15,14 +15,8 @@ import {
   } from "react-native";
   import { React, useState, useRef, useEffect, memo } from "react";
 
-  import { NavigationContainer } from "@react-navigation/native";
   import { FontAwesome, EvilIcons, AntDesign } from "@expo/vector-icons";
-  import { createNativeStackNavigator } from "@react-navigation/native-stack";
-  import Swiper from "react-native-swiper";
-  import ImageViewer from "react-native-image-zoom-viewer";
-  import { BottomSheet } from "react-native-btr";
-  import { MaterialIcons } from "@expo/vector-icons";
-  import Comment from "./Comment.js";
+  
   import { Entypo } from "@expo/vector-icons";
   import { Ionicons } from "@expo/vector-icons";
   const FlatItem = memo((props) => {
@@ -202,7 +196,7 @@ import {
                 name="heart"
                 size={24}
                 color="white"
-                color={isLiked ? "red" : "white"}
+              //  color={isLiked ? "red" : "white"}
                 // color={databaiviet.Like.filter(x => x._id == props.userDn).length > 0 ? "red" : "white"}
               />
             </Text>

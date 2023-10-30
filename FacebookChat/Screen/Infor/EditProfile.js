@@ -29,9 +29,10 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import * as MediaLibrary from "expo-media-library";
 import { firebase } from "../../config.js"
+import { useFocusEffect } from '@react-navigation/native';
 const EditProfile = ({ navigation, route }) => {
     let user = route.params;
-   
+     
   const [selectedImages, setSelectedImages] = useState(user.avatar);
   const pickImages = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -40,31 +41,26 @@ const EditProfile = ({ navigation, route }) => {
       aspect: [4, 3],
       quality: 1,
     });
-      console.log(result);
+     
       delete result.cancelled;
     if (!result.canceled) {
         setSelectedImages(result.assets[0].uri)
     }
     };
     const [displayName, setName] = useState("")
-    const idUser = user.userID;
-    const imageUrl = selectedImages
-    
-    const updateProfile = async (idUser, imageUrl) => {
-        
-        try {
-            // Cập nhật trường avatar trong tài liệu người dùng
-            await firebase.firestore()
-              .collection('users') 
-              .doc(idUser) 
-              .update({ avatar: selectedImages+""});
-        
-            console.log('Cập nhật avatar thành công.');
-          } catch (error) {
-            console.error('Lỗi khi cập nhật avatar:', error);
-          }
-      };
-      
+  
+    const updateProfile = async (userID, imageUrl) => {
+      try {
+          await firebase.firestore()
+              .collection('users')
+              .doc(userID)
+          .update({ avatar: imageUrl });
+        console.log('thanh cong')
+      } catch (error) {
+          console.error('Lỗi khi cập nhật avatar:', error);
+      }
+  };
+  console.log(selectedImages)
   return (
     <View style={styles.container}>
       <View style={styles.backbr}>
@@ -76,7 +72,9 @@ const EditProfile = ({ navigation, route }) => {
           <Text style={{ color: "white" }}> Edit Profile</Text>
         </TouchableOpacity>
               <TouchableOpacity
-                   onPress={updateProfile}
+          onPress={() => {
+            updateProfile(user.userID,selectedImages)
+                   }}
                   style={styles.save}>
           <Text  >Save</Text>
         </TouchableOpacity>

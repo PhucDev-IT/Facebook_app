@@ -10,6 +10,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { firebase } from "../../config.js";
 import Loading_Animation from "../../component/Loading_Animation.js";
+
 const Login = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   handlerCreate = () => {
@@ -21,6 +22,7 @@ const Login = ({ navigation }) => {
   const DangNhap = async (email, matkhau) => {
     try {
       setIsLoading(true);
+
       const userCredential = await firebase
         .auth()
         .signInWithEmailAndPassword(email, matkhau);
@@ -28,35 +30,37 @@ const Login = ({ navigation }) => {
       // Đăng nhập thành công, user chứa thông tin người dùng đã đăng nhập
       const userDocRef = firebase.firestore().collection("users").doc(userID);
       userDocRef.get().then((doc) => {
-            if (doc.exists) {
-            // Dữ liệu người dùng được tìm thấy
-            const userData = doc.data();
-            // console.log("Thông tin người dùng:", userData);
-            setIsLoading(false)
-            navigation.navigate("Bottomnavigate",userData);
-          } else {
-            // Người dùng không tồn tại trong Firestore
-            console.log("Người dùng không tồn tại");
-          }
-        })
+        if (doc.exists) {
+          // Dữ liệu người dùng được tìm thấy
+          const userData = doc.data();
+          setIsLoading(false)
+          navigation.navigate("BottomTabNavigate", userData);
+        } else {
+          // Người dùng không tồn tại trong Firestore
+          alert("Người dùng không tồn tại");
+        }
+      })
         .catch((error) => {
           setIsLoading(false)
           console.error("Lỗi khi truy vấn dữ liệu người dùng:", error);
         });
-      
+
     } catch (error) {
 
       setIsLoading(false)
-      alert("tài khoản hoặc mật khẩu không chính xác")
+      alert("Tài khoản hoặc mật khẩu không chính xác")
       console.error("Lỗi khi đăng nhập:", error);
       throw error; // Xử lý lỗi hoặc trả về lỗi
     }
   };
+
+
   const [hienthi, setHienthi] = useState(true);
   const [eye, setEys] = useState(false);
   const anhien = () => {
     setHienthi(!hienthi);
   };
+
   return (
     <View style={styles.container}>
       <View style={styles.Body}>
@@ -108,7 +112,7 @@ const Login = ({ navigation }) => {
           <Text style={{ color: "white", fontSize: 20 }}>Đăng Nhập</Text>
         </TouchableOpacity>
         <TouchableOpacity>
-          <Text style={{ fontSize: 17 }}>Bạn quyên mật khẩu ư?</Text>
+          <Text style={{ fontSize: 17 }}>Bạn quên mật khẩu ư?</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.botm}>
@@ -121,7 +125,7 @@ const Login = ({ navigation }) => {
           FaceBook_Chat
         </Text>
       </View>
-      {isLoading?<Loading_Animation/>:null}
+      {isLoading ? <Loading_Animation /> : null}
     </View>
   );
 };
@@ -138,10 +142,10 @@ const styles = StyleSheet.create({
   Body: {
     justifyContent: "center",
     width: '100%',
-     height:200,
+    height: 200,
     alignItems: "center",
 
-   
+
   },
   Nhap: {
     justifyContent: "space-around",

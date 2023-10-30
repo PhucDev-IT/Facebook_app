@@ -6,10 +6,14 @@ import InputAccount_SignUp from './Authentication/InputAccount_SignUp.js'
 import SignUpCompleted from './Authentication/SignUpCompleted.js';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import BootomTabNavigate from './BootomTabNavigate.js';
-import Add_articles from './Home/Add_articles.js';
+import BottomTabNavigate from './BottomTabNavigate.js';
 import TestScreen from './TestScreen.js';
-import EditProfile from './Home/EditProfile.js';
+import SearchFriends from '../Screen/Banbe/SearchFriends.js';
+import SplashScreen from './SplashScreen.js';
+import MyFriendScreen from './Banbe/MyFriendScreen.js';
+import ChatDetails from './Chat/ChatDetails.js';
+import EditProfile from './Infor/EditProfile.js';
+import Add_articles from './Home/Add_articles.js'
 const Navigeta_Screen = (props) => {
   const Stack = createNativeStackNavigator();
   return (
@@ -17,21 +21,35 @@ const Navigeta_Screen = (props) => {
       flex: 1
     }}>
       <Stack.Navigator
-        initialRouteName= "Login"
+        initialRouteName="SplashScreen"
         screenOptions={{ headerShown: false }}
       >
         <Stack.Screen
-          name='TestScreen'
-          component={TestScreen}
+          name='SplashScreen'
+          component={SplashScreen}
         />
+        <Stack.Screen
+          initialParams={{ data: props.params }}
+          name='SearchFriends'
+          component={SearchFriends}
+        />
+
+        <Stack.Screen
+          initialParams={{ data: props.params }}
+          name='MyFriendScreen'
+          component={MyFriendScreen}
+        />
+
+        <Stack.Screen
+          initialParams={{ data: props.params }}
+          name='ChatDetails'
+          component={ChatDetails}
+        />
+
         <Stack.Screen
           name='Login'
           component={Login}
         />
-        <Stack.Screen
-        name='Add_articles'
-        component={Add_articles}
-      />
         <Stack.Screen
           name='Infor_SignUp'
           component={Infor_SignUp}
@@ -46,13 +64,17 @@ const Navigeta_Screen = (props) => {
           component={SignUpCompleted}
         />
         <Stack.Screen
-          name='Bottomnavigate'
-          component={BootomTabNavigate}
+          name='BottomTabNavigate'
+          component={BottomTabNavigate}
         />
-       <Stack.Screen
+          <Stack.Screen
           name='EditProfile'
           component={EditProfile}
         />
+        <Stack.Screen
+        name='Add_articles'
+        component={Add_articles}
+      />
       </Stack.Navigator>
     </NavigationContainer>
   )

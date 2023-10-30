@@ -18,13 +18,20 @@ import { React, useState, useEffect, useRef, memo, useCallback } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import FlatItem from "./FlatItem.js";
-import { firebase } from "../../config.js"
+
 const Home = ({ navigation, route }) => {
   const [user, setUser] = useState(route.params.data);
-  // console.log(JSON.stringify(user) + "dtaa");
+  //console.log(JSON.stringify(user)+'dtaa')
   const handlerAdd_articles = () => {
     navigation.navigate("Add_articles", user);
   };
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
   const str = () => {
     return (
       <TouchableOpacity
@@ -45,7 +52,7 @@ const Home = ({ navigation, route }) => {
           <Text style={{ alignItems: "center" }}>+</Text>
         </View>
         <View style={styles.thantin}>
-          <Text style={{ alignItems: "center", marginTop: 10 }}>Tạo Tin </Text>
+          <Text style={{ alignItems: "center", marginTop: 10 }}> Tạo tin </Text>
         </View>
       </TouchableOpacity>
     );
@@ -113,7 +120,12 @@ const Home = ({ navigation, route }) => {
         renderItem={({ item, index }) => {
           return <FlatItem />;
         }}
-      ></FlatList>
+      >
+        refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      </FlatList>
+         
     </View>
   );
 };

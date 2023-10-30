@@ -10,18 +10,34 @@ import {
   SafeAreaView,
   FlatList,
 } from "react-native";
-import { React, useState, useEffect, useRef } from "react";
+import { React, useState,useCallback, useEffect, useRef } from "react";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { collection, getDocs } from "firebase/firestore";
 import { FontAwesome, EvilIcons, AntDesign } from "@expo/vector-icons";
 import FlatItem from "../Home/FlatItem.js";
 import { firebase } from "../../config.js"
+import { useFocusEffect } from '@react-navigation/native';
 const Infor = ({ navigation, route }) => {
-  const user = route.params.data;
+  
+      const[user,setUser]=useState(route.params.data)
+  const [image, setImage] = useState(user.avatar)
+  useFocusEffect(useCallback(() => {
+    const Selectuser = async () => {
+      const userReSelectuserf = await firebase.firestore().collection("users").doc(user.userID)
+      await userReSelectuserf.get()
+        .then((doc) => {
+          if (doc.exists) {
+            const userData = doc.data();
+            setUser(userData)
+          } else {
+
+          }
+        })
+    }
+    Selectuser();
+  }, [user.userID]));
   const InforHeader = () => {
-    const [image, setImage] = useState(user.avatar)
-    
     return (
       <View style={styles.view1}>
         <View style={styles.usercnhan}>
@@ -65,6 +81,7 @@ const Infor = ({ navigation, route }) => {
       </View>
     );
   };
+
   return (
     <View style={styles.container}>
       <FlatList ListHeaderComponent={InforHeader}></FlatList>

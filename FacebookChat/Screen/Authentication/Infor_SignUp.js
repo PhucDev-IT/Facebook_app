@@ -26,7 +26,7 @@ const Infor_SignUp = ({ navigation }) => {
         if (firstName.trim().length === 0 || lastName.trim().length == 0 || formattedDate.trim().length == 0 || selectedId == null) {
             alert("Vui lòng nhập đầy đủ thông tin");
         } else {
-              
+
             navigation.navigate("InputAccount_SignUp", dataUser);
         }
     }
@@ -36,14 +36,13 @@ const Infor_SignUp = ({ navigation }) => {
     }
     const HanldeBack = () => {
         navigation.navigate("Login");
-     }
-
+    }
 
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [gender, setGender] = useState('');
     const [date, setDate] = useState(new Date());
-    const formattedDate = format(date, 'dd/MM/yyyy'); 
+    const formattedDate = format(date, 'dd/MM/yyyy');
     const dataUser = {
         firstName: firstName,
         lastName: lastName,
@@ -52,7 +51,7 @@ const Infor_SignUp = ({ navigation }) => {
     }
 
 
-
+    //Custom radio button choose gender
     const radioButtons = useMemo(() => ([
         {
             id: '1', // acts as primary key, should be unique and non-empty string
@@ -71,7 +70,7 @@ const Infor_SignUp = ({ navigation }) => {
     const onSelect = (radioButtons) => {
         setSelectedId(radioButtons); // Cập nhật giá trị đã chọn bằng Hooks
         setGender(radioButtons);
-      
+
     }
 
 
@@ -79,7 +78,7 @@ const Infor_SignUp = ({ navigation }) => {
     const isShowDatePicker = () => {
         setShowPicker(!showPicker)
     }
-    
+
     const [showPicker, setShowPicker] = useState(false)
 
     //Nhận giá trị ngày được chọn
@@ -101,9 +100,7 @@ const Infor_SignUp = ({ navigation }) => {
         <ScrollView style={styles.container}>
             <View style={styles.topBack}>
                 <TouchableOpacity
-                onPress={HanldeBack}
-                >
-
+                    onPress={HanldeBack}>
                     <Ionicons name="arrow-back-sharp" size={24} color="black" />
                 </TouchableOpacity>
             </View>
@@ -157,7 +154,7 @@ const Infor_SignUp = ({ navigation }) => {
                         radioButtons={radioButtons}
                         onPress={onSelect}
                         selectedId={selectedId}
-                    
+
                         layout='row' />
                 </View>
                 <TouchableOpacity
