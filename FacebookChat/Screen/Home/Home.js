@@ -18,7 +18,7 @@ import { React, useState, useEffect, useRef, memo, useCallback } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import FlatItem from "./FlatItem.js";
-
+import {firebase} from '../../config.js'
 const Home = ({ navigation, route }) => {
   
  const [user, setUser] = useState(route.params.data);
@@ -26,11 +26,45 @@ const Home = ({ navigation, route }) => {
   const handlerAdd_articles = () => {
     navigation.navigate("Add_articles",user);
   }
+
+  const uploadImageToFirebase = async (imageUri) => {
+    try {
+      // Tạo tham chiếu đến thư mục lưu trữ trên Firebase Storage
+      const storageRef = storage().ref('Products');
+  
+      // Tạo tên duy nhất cho tệp ảnh, ví dụ: timestamp
+      const imageName = `${Date.now()}.jpg`;
+  
+      // Tạo tham chiếu đến tệp ảnh trên Firebase Storage
+      const imageRef = storageRef.child(imageName);
+  
+      // Đẩy tệp ảnh lên Firebase Storage
+      await imageRef.putFile(imageUri);
+  
+      // Lấy URL của tệp ảnh đã tải lên
+      const downloadURL = await imageRef.getDownloadURL();
+  
+      return downloadURL;
+    } catch (error) {
+      console.error('Lỗi khi đẩy ảnh lên Firebase Storage:', error);
+      return null;
+    }
+  };
+  
+  // Sử dụng hàm để tải ảnh lên và nhận URL ảnh
+  uploadImageToFirebase(yourImageUri).then((imageUrl) => {
+    if (imageUrl) {
+      console.log('URL của ảnh đã tải lên:', imageUrl);
+      // Gọi callback hoặc thực hiện các xử lý khác tại đây
+    } else {
+      console.error('Không thể tải ảnh lên Firebase Storage.');
+    }
+  });
   const str = () => {
     return (
       <TouchableOpacity
         onPress={() => {
-          console.log("bhdshbh");
+          handle()
         }}
         style={styles.creteTin}
       >

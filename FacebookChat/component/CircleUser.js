@@ -5,25 +5,23 @@ import { firebase } from '../config'
 import { useEffect } from 'react'
 const CircleUser = (props) => {
   const navigation = useNavigation();
-
+  console.log(props.item.MyFriend.userID)
   const inforRoom = async () => {
     const query = await firebase.firestore().collection('chats').where('user', 'array-contains', props.item.MyFriend.userID).get();
-
+    
     let roomId = null;
     query.forEach((doc) => {
       roomId = doc.id;
     });
-    // Trả về roomId
+    
+    if(roomId==null){
+
+      roomId = props.item.MyFriend.userID > props.userCurrent.userID ? `${props.item.MyFriend.userID + '-' + props.userCurrent.userID}` : `${props.userCurrent.userID + '-' + props.item.MyFriend.userID}`;
+    }
+
     return roomId;
   };
 
-  useEffect(() => {
-    inforRoom().then((r) => {
-      console.log(r); // Hiển thị roomId sau khi truy vấn hoàn thành
-    }).catch((error) => {
-      console.error('Lỗi khi lấy roomId:', error);
-    });
-  }, []);
 
   return (
 
@@ -31,7 +29,7 @@ const CircleUser = (props) => {
     <TouchableOpacity
       onPress={async () => {
         const roomId = await inforRoom();
-        navigation.navigate("ChatDetails", { roomId: roomId, UserCurrent:props.userCurrent, IdFriend:props.item.MyFriend.userID });
+        navigation.navigate("ChatDetails", { roomId: roomId, UserCurrent:props.userCurrent, FriendChat:props.item.MyFriend });
       }}
       style={styles.btn}
     >

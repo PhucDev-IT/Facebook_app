@@ -8,9 +8,10 @@ import Layout_Message from '../../component/Layout_Message';
 import { useState } from 'react';
 import { GiftedChat } from 'react-native-gifted-chat'
 import { firebase } from '../../config'
+import { ca, da } from 'date-fns/locale';
 const Chat = ({ navigation, route }) => {
- 
-  const [message, setListMessages] = useState([]);
+  // <Layout_Message item={item}  />
+  const [lastChatMessages, setLastChatMessages] = useState([]);
   const [myFriends, setMyFriends] = useState([]);
   const userCurrent = route.params.data;
   //Phân trang số lượng đoạn chats
@@ -19,19 +20,20 @@ const Chat = ({ navigation, route }) => {
 
 
   //Lấy 20 bạn bè để làm icon đang onl :)
-   //Lấy danh sách bạn bè
-   useEffect(() => {
+  //Lấy danh sách bạn bè
+  useEffect(() => {
     const getFriendRequests = async () => {
-        const friends = firebase.firestore().collection('Friends').doc(userCurrent.userID).collection('userFriends')
+      const friends = firebase.firestore().collection('Friends').doc(userCurrent.userID).collection('userFriends')
+      const snapshot = await friends.get();
 
-        const snapshot = await friends.get();
-
-        const requests = snapshot.docs.map((doc) => doc.data());
-        setMyFriends(requests);
+      const requests = snapshot.docs.map((doc) => doc.data());
+      
+      setMyFriends(requests);
+   
     };
-
+    
     getFriendRequests();
-}, [userCurrent.userID]);
+  }, [userCurrent.userID]);
 
 
   //Lấy danh sách tin nhắn
@@ -39,33 +41,44 @@ const Chat = ({ navigation, route }) => {
     const fetchChatData = async () => {
       try {
         const chatsRef = firebase.firestore().collection('chats');
-
         const query = await chatsRef.where('user', 'array-contains', userCurrent.userID)
         //Lấy cuộc trò chuyện của user hiện tại vs các user khác
         const querySnapshot = await query.get();
         querySnapshot.forEach((doc) => {
-          //Sau khi lấy được id cụ thể thì truy xuất chi tiết đoạn chat để lấy tin nhắn cuối cùng
-          const conversationRef = chatsRef.doc(doc.id).collection('conversation').orderBy('timeSend', 'desc').limit(1).get();
 
-          conversationRef.then((querySnapshot) => {
-            // Lấy ra các tài liệu từ kết quả truy vấn
-            querySnapshot.forEach((doc) => {
-              // const data = doc.data();
-              // console.log(data); // In ra thông tin của tài liệu đầu tiên trong truy vấn
-            });
-          }).catch((error) => {
-            console.error('Lỗi khi lấy dữ liệu:', error);
+          //Sau khi lấy được id cụ thể thì truy xuất chi tiết đoạn chat để lấy tin nhắn cuối cùng
+          const conversationRef = chatsRef.doc(doc.id).collection('conversation').orderBy('createdAt', 'desc').limit(1).get();
+          conversationRef.then((querySnapshotRef) => {
+            if (querySnapshotRef.size > 0) {
+              const docRef = querySnapshotRef.docs[0];
+              const data = docRef.data();
+
+              const conversation = {
+                user1: {
+                  name: data.sentTo.DisplayName,
+                  avatar: data.sentTo.avatar,
+                  id: data.sentTo.userID,
+                },
+                user2: {
+                  name: data.sentBy.DisplayName,
+                  avatar: data.sentBy.avatar,
+                  id: data.sentBy.userID,
+                },
+                lastMess: data.text
+              };
+              setLastChatMessages(conversation);
+            }
           });
 
-        });
+        })
 
-        const lastChatMessages = [];
       } catch (error) {
-        console.log("Có lỗi khi lấy user: " + error)
+        console.log("Có lỗi khi lấy thông tin user chat: " + error)
       }
     }
+
     fetchChatData(); // Gọi hàm để lấy dữ liệu khi màn hình được hiển thị
-  }, []);
+  }, [userCurrent.userID]);
 
 
 
@@ -83,16 +96,16 @@ const Chat = ({ navigation, route }) => {
         <FlatList
           horizontal={true}
           data={myFriends}
-          keyExtractor={item => item.name}
+          keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => <CircleUser item={item} userCurrent={route.params.data} />}>
         </FlatList>
       </View>
       <View style={styles.body}>
-
+      <Text style={{fontSize:18,fontWeight:'bold'}}>Làm gì có người yêu mà đòi chat</Text>
         {/* <FlatList
-          data={friends}
-          keyExtractor={item => item.name}
-          renderItem={({ item }) => <Layout_Message nameUser={item.name} avt={item.url} lastMessage={item.text} />}>
+          data={lastChatMessages}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) => {console.log(item)}}>
         </FlatList> */}
       </View>
 
@@ -127,7 +140,9 @@ const styles = StyleSheet.create({
   },
 
   body: {
-    paddingVertical: 10
+    paddingVertical: 100,
+    justifyContent:'center',
+    alignItems:'center',
   },
 
 })

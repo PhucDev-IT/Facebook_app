@@ -2,9 +2,14 @@ import { View, Text, StyleSheet, Image } from 'react-native'
 import React from 'react'
 import { TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-const Layout_Message = (props) => {
+import { useEffect } from 'react'
+const Layout_Message = (item) => {
 
     const navigation = useNavigation();
+    console.log(JSON.stringify(item)+'dtaa')
+  
+    // Bây giờ bạn có thể sử dụng giá trị lastChatMessages ở đây.
+  
 
     return (
         <View style={styles.container}>

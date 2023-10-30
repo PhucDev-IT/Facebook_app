@@ -19,7 +19,7 @@ const Navigeta_Screen = (props) => {
       flex: 1
     }}>
       <Stack.Navigator
-        initialRouteName="SplashScreen"
+        initialRouteName="Login"
         screenOptions={{ headerShown: false }}
       >
         <Stack.Screen
@@ -60,6 +60,11 @@ const Navigeta_Screen = (props) => {
         <Stack.Screen
           name='SignUpCompleted'
           component={SignUpCompleted}
+        />
+
+        <Stack.Screen
+          name='TestScreen'
+          component={TestScreen}
         />
         <Stack.Screen
           name='BottomTabNavigate'
