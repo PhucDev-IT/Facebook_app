@@ -18,69 +18,41 @@ import { React, useState, useEffect, useRef, memo, useCallback } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import FlatItem from "./FlatItem.js";
-import {firebase} from '../../config.js'
+
 const Home = ({ navigation, route }) => {
-  
- const [user, setUser] = useState(route.params.data);
+  const [user, setUser] = useState(route.params.data);
   //console.log(JSON.stringify(user)+'dtaa')
   const handlerAdd_articles = () => {
-    navigation.navigate("Add_articles",user);
-  }
-
-  const uploadImageToFirebase = async (imageUri) => {
-    try {
-      // Tạo tham chiếu đến thư mục lưu trữ trên Firebase Storage
-      const storageRef = storage().ref('Products');
-  
-      // Tạo tên duy nhất cho tệp ảnh, ví dụ: timestamp
-      const imageName = `${Date.now()}.jpg`;
-  
-      // Tạo tham chiếu đến tệp ảnh trên Firebase Storage
-      const imageRef = storageRef.child(imageName);
-  
-      // Đẩy tệp ảnh lên Firebase Storage
-      await imageRef.putFile(imageUri);
-  
-      // Lấy URL của tệp ảnh đã tải lên
-      const downloadURL = await imageRef.getDownloadURL();
-  
-      return downloadURL;
-    } catch (error) {
-      console.error('Lỗi khi đẩy ảnh lên Firebase Storage:', error);
-      return null;
-    }
+    navigation.navigate("Add_articles", user);
   };
-  
-  // Sử dụng hàm để tải ảnh lên và nhận URL ảnh
-  uploadImageToFirebase(yourImageUri).then((imageUrl) => {
-    if (imageUrl) {
-      console.log('URL của ảnh đã tải lên:', imageUrl);
-      // Gọi callback hoặc thực hiện các xử lý khác tại đây
-    } else {
-      console.error('Không thể tải ảnh lên Firebase Storage.');
-    }
-  });
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
   const str = () => {
     return (
       <TouchableOpacity
         onPress={() => {
-          handle()
+          console.log("bhdshbh");
         }}
         style={styles.creteTin}
       >
-        {/* <Image
-        style={{
-          width: "100%",
-          flex: 0.7,
-          height: "70%",
-        }}
-        source={{ uri: user.Avatar }}
-      ></Image> */}
+        <Image
+          style={{
+            width: "100%",
+            flex: 0.7,
+            height: "70%",
+          }}
+          source={{ uri: user.avatar }}
+        ></Image>
         <View style={styles.tintuc}>
           <Text style={{ alignItems: "center" }}>+</Text>
         </View>
         <View style={styles.thantin}>
-          <Text style={{ alignItems: "center", marginTop: 10 }}>Tạo Tin </Text>
+          <Text style={{ alignItems: "center", marginTop: 10 }}> Tạo tin </Text>
         </View>
       </TouchableOpacity>
     );
@@ -100,9 +72,15 @@ const Home = ({ navigation, route }) => {
           </View>
           <View style={styles.thanhngang}></View>
           <View style={styles.thanhbar}>
-            <View style={styles.thanhbar1}></View>
-            <TouchableOpacity style={styles.trangthai}
-               onPress={ handlerAdd_articles}
+            <View style={styles.thanhbar1}>
+              <Image
+                style={styles.thanhbar1}
+                source={{ uri: user.avatar }}
+              ></Image>
+            </View>
+            <TouchableOpacity
+              style={styles.trangthai}
+              onPress={handlerAdd_articles}
             >
               <Text style={{ color: "white" }}>Trạng thái của bạn</Text>
             </TouchableOpacity>
@@ -112,7 +90,7 @@ const Home = ({ navigation, route }) => {
         </View>
         <FlatList
           horizontal
-          // keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item) => item.id.toString()}
           ListHeaderComponent={str}
           renderItem={({ item }) => {
             return (
@@ -142,7 +120,12 @@ const Home = ({ navigation, route }) => {
         renderItem={({ item, index }) => {
           return <FlatItem />;
         }}
-      ></FlatList>
+      >
+        refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      </FlatList>
+         
     </View>
   );
 };

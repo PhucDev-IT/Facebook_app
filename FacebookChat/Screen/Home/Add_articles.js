@@ -34,9 +34,13 @@ import * as MediaLibrary from "expo-media-library";
 import { MaterialIcons } from "@expo/vector-icons";
 import Spinner from "react-native-loading-spinner-overlay";
 import Countries from "./Selected.js";
+import { firebase } from "../../config.js";
+import * as FileSystem from 'expo-file-system'
+
 const Add_articles = ({ navigation, route }) => {
   const [user, setUser] = useState(route.params);
   const [Hienthi, setHienthi] = useState(true);
+
   const HandeHienthi = () => {
     setHienthi(true);
   };
@@ -45,11 +49,11 @@ const Add_articles = ({ navigation, route }) => {
     navigation.navigate("Home");
   };
   // lấy data cua use
-  // const [data, setData] = useState(route.params);
+
   //  console.log(data._id)
   // thuc hien select Share option
   const [permission, setPermission] = useState("public");
-
+  const countries = Countries;
   // botomsheeet cho phần lựa chon keier bà
   const [visible, setVisible] = useState(false);
   const bootomShetShare = () => {
@@ -59,11 +63,11 @@ const Add_articles = ({ navigation, route }) => {
   // set trang thai để cho thẻ view text và view ảnh được hiển thị
   const [viewHienthi, setView] = useState(1);
   // cho phép chọn post ânr hoặc hiển thị
-
-  const [table, settable] = useState(false);
+  let [isSelectable, setIsSelectable] = useState(false);
   // mục nhấn chon ảnh  câps quyền cho ảnh
   const [status, requestPermission] = ImagePicker.useMediaLibraryPermissions();
   const [selectedImages, setSelectedImages] = useState([]);
+  let ArrayImage = [];
   const pickImages = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       allowsMultipleSelection: true,
@@ -71,18 +75,23 @@ const Add_articles = ({ navigation, route }) => {
       aspect: [4, 3],
       quality: 1,
     });
+    console.log("Link ảnh lấy ra: ", result)
     if (!result.canceled) {
-      setSelectedImages(result.assets.map((asset) => asset.uri));
+
+      setSelectedImages(result.assets.map((asset) => {
+        return { path: asset.uri }
+      }
+      ));
     }
   };
   useEffect(() => {
     const postImage = () => {
       if (selectedImages.length == 0) {
         setView(1);
-        settable(false);
+        setIsSelectable(false);
       } else {
         setView(2);
-        settable(true);
+        setIsSelectable(true);
       }
     };
     postImage();
@@ -93,14 +102,13 @@ const Add_articles = ({ navigation, route }) => {
   const onchangerTexT = (value) => {
     setIsText(value);
     if (value == "" && selectedImages.length == 0) {
-      settable(false);
+      setIsSelectable(false);
     } else if (value == "" && selectedImages.length > 0) {
-      settable(true);
+      setIsSelectable(true);
     } else {
-      settable(true);
+      setIsSelectable(true);
     }
   };
-
   // set lai khi xoa di 1 cai anh
   const XoaAnh = (image, index) => {
     // console.log(image,index)
@@ -147,7 +155,7 @@ const Add_articles = ({ navigation, route }) => {
   const handlePress = (option) => {
     setSelectedOption(option);
   };
-  useEffect(() => {}, [selectedOption]);
+  useEffect(() => { }, [selectedOption]);
   // tương tác với ảnh sau khi đưuocj chupk
   const [capturedImage, setCapturedImage] = useState(null);
 
@@ -169,7 +177,7 @@ const Add_articles = ({ navigation, route }) => {
   const SaveImage = () => {
     setView(3);
     setHienthi(true);
-    settable(true);
+    setIsSelectable(true);
   };
 
   // cho phép nhấn xóa khi khoong ưng cái ảnh này
@@ -194,7 +202,16 @@ const Add_articles = ({ navigation, route }) => {
   const [selectedLocation, setSelectedLocation] = useState(null);
 
   // thuc hien lấyyvi tri
-
+  const [location, setLocation] = useState(null);
+  const choPhepTRuyCapViTri = async () => {
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      // Xử lý khi người dùng không cấp quyền
+      return;
+    }
+    const currentLocation = await Location.getCurrentPositionAsync({});
+    setLocation(currentLocation);
+  };
   const [vitri, setVitri] = useState(null);
   const handleValueChange = (newVitri) => {
     setVitri(newVitri);
@@ -202,7 +219,6 @@ const Add_articles = ({ navigation, route }) => {
       setVisible2(!visible2);
     }
   };
-
   const handleLocationSelect = (location) => {
     setSelectedLocation(location);
     console.log("vi tri");
@@ -216,11 +232,50 @@ const Add_articles = ({ navigation, route }) => {
   const [loading, setLoading] = useState(false);
   // thưc hien lay du lieu gui len axios
   const [feel, setFell] = useState(null);
+  // tạo  1 đôis tượng form đa ta
+  const formData = new FormData();
 
-  const HanderAxios = async () => {
-    console.log("guu di");
+
+  const uploadImageToStorage = async (image, imageName) => {
+
+    await reference.putFile(image);
+    return reference.getDownloadURL();
   };
-  // console.log(selectedImages)
+
+  const handleUplaodPost = async () => {
+    try {
+   
+      for (const image of selectedImages) {
+       
+        const { uri } = await FileSystem.getInfoAsync(image.path);
+        const blob = await new Promise((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.onload = () => {
+            resolve(xhr.response);
+          };
+          xhr.onerror = (e) => {
+            reject(new TypeError('Mạng không ổn định'));
+          };
+          xhr.responseType = 'blob';
+          xhr.open('GET', uri, true);
+          xhr.send();
+        });
+        const filename = `${Date.now()}`;
+        const ref = firebase.storage().ref().child('posts/'+filename);
+        await ref.put(blob);
+        // Lấy download URL của tệp đã tải lên
+      const downloadURL = await ref.getDownloadURL();
+        console.log("link sau upload: ",downloadURL)
+      // Lưu download URL vào mảng imageUrls
+      //imageUrls.push(downloadURL);
+      }
+      alert("Thành công");
+      setSelectedImages([]); // Reset danh sách các hình ảnh sau khi đã tải lên thành công
+    } catch (error) {
+      console.error('Lỗi khi tải lên hình ảnh:', error);
+    }
+  }
+
   return (
     <View style={{ flex: 1 }}>
       {Hienthi && (
@@ -234,15 +289,16 @@ const Add_articles = ({ navigation, route }) => {
               <Text style={{ color: "white" }}> Create Post</Text>
             </TouchableOpacity>
             <TouchableOpacity
+              onPress={handleUplaodPost}
               style={{
                 flexDirection: "row",
-                backgroundColor: table ? "blue" : "green",
+                backgroundColor: true ? "blue" : "green",
                 width: "15%",
                 height: "60%",
                 justifyContent: "center",
                 alignItems: "center",
               }}
-             
+
             >
               <Text style={{ color: "white" }}>POST</Text>
               <Spinner
@@ -254,15 +310,17 @@ const Add_articles = ({ navigation, route }) => {
           </View>
           <View style={styles.view1}>
             <View style={styles.view2}>
-              <Image style={styles.img1} />
+              <Image style={styles.img1}
+                source={{ uri: user.avatar }}
+              />
             </View>
             <View style={styles.view5}>
               <View style={styles.view3}>
-                <Text style={styles.txt1}>{user.FirstName+" "+user.LastName}</Text>
+                <Text style={styles.txt1}>{user.DisplayName}</Text>
                 <Text style={styles.view4}>{vitri}</Text>
               </View>
               <View style={styles.view6}>
-              <SelectDropdown
+                <SelectDropdown
                   data={Countries}
                   onSelect={(selectedItem, index) => {
                     setPermission(selectedItem.title);
@@ -339,10 +397,11 @@ const Add_articles = ({ navigation, route }) => {
                     loop={true}
                   >
                     {selectedImages.map((image, index) => (
+
                       <View key={index} style={{ position: "relative" }}>
                         <TouchableOpacity
                           onPress={() => {
-                            XoaAnh(image, index);
+                            XoaAnh(image.path, index);
                           }}
                           style={styles.touch3}
                         >
@@ -353,7 +412,7 @@ const Add_articles = ({ navigation, route }) => {
                         </TouchableOpacity>
                         <Image
                           key={index}
-                          source={{ uri: image }}
+                          source={{ uri: image.path }}
                           style={styles.img3}
                         />
                       </View>
@@ -483,7 +542,7 @@ const Add_articles = ({ navigation, route }) => {
 
               <View style={styles.view10}>
                 <View style={styles.view18}>
-                 
+
                   <TouchableOpacity onPress={() => handlePress("64mp")}>
                     <Text
                       style={{
@@ -497,7 +556,7 @@ const Add_articles = ({ navigation, route }) => {
                       64mp
                     </Text>
                   </TouchableOpacity>
-                 
+
                   <TouchableOpacity onPress={() => handlePress("full")}>
                     <Text style={styles.txt4}>full</Text>
                   </TouchableOpacity>
@@ -627,7 +686,7 @@ const Add_articles = ({ navigation, route }) => {
         //setting the visibility state of the bottom shee
         //Toggling the visibility state on the click of the back botton
         onBackdropPress={bootomShetShare2}
-        //Toggling the visibility state on the clicking out side of the sheet
+      //Toggling the visibility state on the clicking out side of the sheet
       >
         {/* <DistrictScreen onValueChange={handleValueChange} /> */}
       </BottomSheet>
@@ -644,6 +703,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     paddingHorizontal: 10,
+
   },
   view1: {
     backgroundColor: "#333333",
@@ -773,6 +833,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     backgroundColor: "#808080",
+    paddingBottom: 50
   },
   view14: {
     width: "100%",
@@ -802,7 +863,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     backgroundColor: "#fff",
   },
-  
+
   view17: {
     width: "100%",
     height: "8%",
