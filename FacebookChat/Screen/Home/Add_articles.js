@@ -35,11 +35,13 @@ import { MaterialIcons } from "@expo/vector-icons";
 import Spinner from "react-native-loading-spinner-overlay";
 import Countries from "./Selected.js";
 import { firebase } from "../../config.js";
+
 import * as FileSystem from 'expo-file-system'
 
 const Add_articles = ({ navigation, route }) => {
   const [user, setUser] = useState(route.params);
   const [Hienthi, setHienthi] = useState(true);
+
 
   const HandeHienthi = () => {
     setHienthi(true);
@@ -77,11 +79,12 @@ const Add_articles = ({ navigation, route }) => {
     });
     console.log("Link ảnh lấy ra: ", result)
     if (!result.canceled) {
-
-      setSelectedImages(result.assets.map((asset) => {
+      setSelectedImages(result.assets.map((asset) => 
+        {
         return { path: asset.uri }
       }
       ));
+
     }
   };
   useEffect(() => {
@@ -111,10 +114,12 @@ const Add_articles = ({ navigation, route }) => {
   };
   // set lai khi xoa di 1 cai anh
   const XoaAnh = (image, index) => {
-    // console.log(image,index)
+    console.log('anh được xoas')
+    console.log(image,index)
     const newImages = [...selectedImages];
     newImages.splice(index, 1);
     setSelectedImages(newImages);
+    console.log('anh được xoas')
     if (newImages.length === 0) {
       setView(1);
     }
@@ -160,6 +165,7 @@ const Add_articles = ({ navigation, route }) => {
   const [capturedImage, setCapturedImage] = useState(null);
 
   const __takePicture = async () => {
+    console.log('hahah')
     if (!cameraRef.current) return;
     const photo = await cameraRef.current.takePictureAsync();
     setCapturedImage(photo);
@@ -175,6 +181,7 @@ const Add_articles = ({ navigation, route }) => {
   };
   // khi bạn bấm với nut save
   const SaveImage = () => {
+    console.log('savsanh')
     setView(3);
     setHienthi(true);
     setIsSelectable(true);
@@ -182,6 +189,7 @@ const Add_articles = ({ navigation, route }) => {
 
   // cho phép nhấn xóa khi khoong ưng cái ảnh này
   const __retakePicture = () => {
+    console.log.log('retakepicker')
     setCapturedImage(null);
     setIsView(true);
     __startCamera();
@@ -219,10 +227,7 @@ const Add_articles = ({ navigation, route }) => {
       setVisible2(!visible2);
     }
   };
-  const handleLocationSelect = (location) => {
-    setSelectedLocation(location);
-    console.log("vi tri");
-  };
+
   const bootomShetShare2 = () => {
     choPhepTRuyCapViTri();
     setVisible2(!visible2);
@@ -233,49 +238,14 @@ const Add_articles = ({ navigation, route }) => {
   // thưc hien lay du lieu gui len axios
   const [feel, setFell] = useState(null);
   // tạo  1 đôis tượng form đa ta
-  const formData = new FormData();
+
+  
 
 
-  const uploadImageToStorage = async (image, imageName) => {
-
-    await reference.putFile(image);
-    return reference.getDownloadURL();
-  };
-
-  const handleUplaodPost = async () => {
-    try {
-   
-      for (const image of selectedImages) {
+    const handleUplaodPost = async () => {
+     
        
-        const { uri } = await FileSystem.getInfoAsync(image.path);
-        const blob = await new Promise((resolve, reject) => {
-          const xhr = new XMLHttpRequest();
-          xhr.onload = () => {
-            resolve(xhr.response);
-          };
-          xhr.onerror = (e) => {
-            reject(new TypeError('Mạng không ổn định'));
-          };
-          xhr.responseType = 'blob';
-          xhr.open('GET', uri, true);
-          xhr.send();
-        });
-        const filename = `${Date.now()}`;
-        const ref = firebase.storage().ref().child('posts/'+filename);
-        await ref.put(blob);
-        // Lấy download URL của tệp đã tải lên
-      const downloadURL = await ref.getDownloadURL();
-        console.log("link sau upload: ",downloadURL)
-      // Lưu download URL vào mảng imageUrls
-      //imageUrls.push(downloadURL);
       }
-      alert("Thành công");
-      setSelectedImages([]); // Reset danh sách các hình ảnh sau khi đã tải lên thành công
-    } catch (error) {
-      console.error('Lỗi khi tải lên hình ảnh:', error);
-    }
-  }
-
   return (
     <View style={{ flex: 1 }}>
       {Hienthi && (
@@ -397,11 +367,11 @@ const Add_articles = ({ navigation, route }) => {
                     loop={true}
                   >
                     {selectedImages.map((image, index) => (
-
                       <View key={index} style={{ position: "relative" }}>
                         <TouchableOpacity
                           onPress={() => {
-                            XoaAnh(image.path, index);
+                            console.log('anh được xoas')
+                            // XoaAnh(image.path, index);
                           }}
                           style={styles.touch3}
                         >
@@ -568,7 +538,7 @@ const Add_articles = ({ navigation, route }) => {
               </View>
             </View>
           )}
-          {/* {!isView && (
+          {!isView && (
               <View
                 style={{
                   backgroundColor: "transparent",
@@ -578,13 +548,13 @@ const Add_articles = ({ navigation, route }) => {
                 }}
               >
                 <ImageBackground
-                //   source={{ uri: capturedImage && capturedImage.uri }}
+                  source={{ uri: capturedImage && capturedImage.uri }}
                   style={{
                     flex: 1,
                   }}
                 />
               </View>
-            )} */}
+            )}
           <View style={styles.view19}></View>
         </View>
       )}
@@ -833,7 +803,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     backgroundColor: "#808080",
-    paddingBottom: 50
+    paddingBottom:50
+
   },
   view14: {
     width: "100%",

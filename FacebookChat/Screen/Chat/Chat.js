@@ -3,17 +3,16 @@ import React, { useEffect } from 'react'
 import CircleUser from '../../component/CircleUser'
 import { TouchableOpacity } from 'react-native'
 import { AntDesign } from '@expo/vector-icons';
-import { ScrollView } from 'react-native';
-import Layout_Message from '../../component/Layout_Message';
 import { useState } from 'react';
-import { GiftedChat } from 'react-native-gifted-chat'
 import { firebase } from '../../config'
-import { ca, da } from 'date-fns/locale';
+import Layout_Message from '../../component/Layout_Message';
+
 const Chat = ({ navigation, route }) => {
-  // <Layout_Message item={item}  />
-  const [lastChatMessages, setLastChatMessages] = useState([]);
   const [myFriends, setMyFriends] = useState([]);
+  const [messages, setMessages] = useState([]);
   const userCurrent = route.params.data;
+
+
   //Phân trang số lượng đoạn chats
   const currentPage = 1;
   const itemsPerPage = 10;
@@ -23,15 +22,18 @@ const Chat = ({ navigation, route }) => {
   //Lấy danh sách bạn bè
   useEffect(() => {
     const getFriendRequests = async () => {
-      const friends = firebase.firestore().collection('Friends').doc(userCurrent.userID).collection('userFriends')
-      const snapshot = await friends.get();
+      try {
+        const friends = firebase.firestore().collection('Friends').doc(userCurrent.userID).collection('userFriends')
+        const snapshot = await friends.get();
 
-      const requests = snapshot.docs.map((doc) => doc.data());
-      
-      setMyFriends(requests);
-   
+        const requests = snapshot.docs.map((doc) => doc.data());
+        setMyFriends(requests);
+      } catch (error) {
+        console.log("Có lỗi: ", error)
+      }
+
     };
-    
+
     getFriendRequests();
   }, [userCurrent.userID]);
 
@@ -41,46 +43,53 @@ const Chat = ({ navigation, route }) => {
     const fetchChatData = async () => {
       try {
         const chatsRef = firebase.firestore().collection('chats');
-        const query = await chatsRef.where('user', 'array-contains', userCurrent.userID)
-        //Lấy cuộc trò chuyện của user hiện tại vs các user khác
-        const querySnapshot = await query.get();
-        querySnapshot.forEach((doc) => {
+        const query = chatsRef.where('user', 'array-contains', userCurrent.userID);
 
-          //Sau khi lấy được id cụ thể thì truy xuất chi tiết đoạn chat để lấy tin nhắn cuối cùng
-          const conversationRef = chatsRef.doc(doc.id).collection('conversation').orderBy('createdAt', 'desc').limit(1).get();
-          conversationRef.then((querySnapshotRef) => {
-            if (querySnapshotRef.size > 0) {
-              const docRef = querySnapshotRef.docs[0];
-              const data = docRef.data();
-
-              const conversation = {
-                user1: {
-                  name: data.sentTo.DisplayName,
-                  avatar: data.sentTo.avatar,
-                  id: data.sentTo.userID,
-                },
-                user2: {
-                  name: data.sentBy.DisplayName,
-                  avatar: data.sentBy.avatar,
-                  id: data.sentBy.userID,
-                },
-                lastMess: data.text
-              };
-              setLastChatMessages(conversation);
-            }
-          });
-
-        })
-
+        query.onSnapshot(async (querySnapshot) => {
+          let lastMess = [];
+        
+          for (const doc of querySnapshot.docs) {
+            const conversationRef = chatsRef.doc(doc.id).collection('conversation').orderBy('createdAt', 'desc').limit(1);
+        
+            conversationRef.onSnapshot((querySnapshotRef) => {
+              if (querySnapshotRef.size > 0) {
+                const docRef = querySnapshotRef.docs[0];
+                const data = docRef.data();
+                
+                // Xóa mục cũ khỏi mảng nếu tồn tại
+                const existingIndex = lastMess.findIndex(item => item.idRoom === doc.id);
+                if (existingIndex !== -1) {
+                  lastMess.splice(existingIndex, 1);
+                }
+        
+                lastMess.push({
+                  idRoom: doc.id,
+                  lastMess: data.text,
+                  sentTo: {
+                    DisplayName: data.sentTo.DisplayName,
+                    avatar: data.sentTo.avatar,
+                    id: data.sentTo.userID,
+                  },
+                  sentBy: {
+                    DisplayName: data.sentBy.DisplayName,
+                    avatar: data.sentBy.avatar,
+                    id: data.sentBy.userID,
+                  },
+                });
+        
+                setMessages(lastMess); // Đặt state sau khi lấy được dữ liệu
+              }
+            });
+          }
+        });
+        
       } catch (error) {
-        console.log("Có lỗi khi lấy thông tin user chat: " + error)
+        console.log("Có lỗi khi lấy thông tin user chat: " + error);
       }
     }
 
     fetchChatData(); // Gọi hàm để lấy dữ liệu khi màn hình được hiển thị
   }, [userCurrent.userID]);
-
-
 
 
   return (
@@ -101,12 +110,12 @@ const Chat = ({ navigation, route }) => {
         </FlatList>
       </View>
       <View style={styles.body}>
-      <Text style={{fontSize:18,fontWeight:'bold'}}>Làm gì có người yêu mà đòi chat</Text>
-        {/* <FlatList
-          data={lastChatMessages}
+        <FlatList
+          style={styles.listMess}
+          data={messages}
           keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => {console.log(item)}}>
-        </FlatList> */}
+          renderItem={({ item }) => <Layout_Message item={item} userCurrent={userCurrent} />}
+        />
       </View>
 
     </View>
@@ -140,9 +149,11 @@ const styles = StyleSheet.create({
   },
 
   body: {
-    paddingVertical: 100,
-    justifyContent:'center',
-    alignItems:'center',
-  },
+    flex: 2,
+    paddingVertical: 10,
 
+  },
+  listMess: {
+
+  }
 })

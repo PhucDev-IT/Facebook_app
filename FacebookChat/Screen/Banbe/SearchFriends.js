@@ -2,12 +2,10 @@ import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-nativ
 import React from 'react'
 import AddFriend from '../../component/AddFriend'
 import { useState, useEffect } from 'react'
-
 import { Ionicons } from "@expo/vector-icons";
 import { firebase } from '../../config'
 import { FlatList } from 'react-native'
 import { useRoute } from "@react-navigation/native"
-import { fi } from 'date-fns/locale';
 const SearchFriends = ({ navigation }) => {
   const [textInput, setTextInput] = useState('');
   const [listUser, setListUser] = useState([]);

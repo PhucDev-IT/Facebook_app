@@ -3,8 +3,17 @@ import React, { useState, useEffect } from 'react'
 import Story_Item from '../../component/Story_Item'
 import Default_item from './Default_item'
 import { FlatList } from 'react-native'
-const Story = () => {
+import BackgroundTask from 'react-native-background-task';
+import PushNotification from 'react-native-push-notification';
+const Story = ({ navigation, route }) => {
   const [stories, setStories] = useState([]);
+  const userCurrent = route.params.data;
+
+  // Xác định cách xử lý khi nhiệm vụ nền hoàn thành
+  BackgroundTask.finish();
+
+
+
   const defaultStory = () => {
     setStories([
       {
@@ -81,9 +90,10 @@ const Story = () => {
         <FlatList
           data={stories}
           numColumns={2}
-
           keyExtractor={(item, index) => index.toString()} // Assuming each document has a unique "id" field
-          renderItem={(item) => <Story_Item item={item} />}
+          renderItem={({ item, index }) => {
+            return index === 0 ? <Default_item item={userCurrent}/> : <Story_Item item={item} />;
+          }}
         />
       </View>
     </View>

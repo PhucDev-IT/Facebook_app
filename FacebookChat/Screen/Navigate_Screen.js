@@ -14,6 +14,7 @@ import MyFriendScreen from './Banbe/MyFriendScreen.js';
 import ChatDetails from './Chat/ChatDetails.js';
 import EditProfile from './Infor/EditProfile.js';
 import Add_articles from './Home/Add_articles.js'
+import PreviewStory from './Story/PreviewStory.js';
 const Navigeta_Screen = (props) => {
   const Stack = createNativeStackNavigator();
   return (
@@ -24,6 +25,12 @@ const Navigeta_Screen = (props) => {
         initialRouteName="SplashScreen"
         screenOptions={{ headerShown: false }}
       >
+
+        <Stack.Screen
+          name='TestScreen'
+          component={TestScreen}
+        />
+
         <Stack.Screen
           name='SplashScreen'
           component={SplashScreen}
@@ -63,18 +70,25 @@ const Navigeta_Screen = (props) => {
           name='SignUpCompleted'
           component={SignUpCompleted}
         />
+
+        <Stack.Screen
+          name='PreviewStory'
+          component={PreviewStory}
+        />
+
+
         <Stack.Screen
           name='BottomTabNavigate'
           component={BottomTabNavigate}
         />
-          <Stack.Screen
+        <Stack.Screen
           name='EditProfile'
           component={EditProfile}
         />
         <Stack.Screen
-        name='Add_articles'
-        component={Add_articles}
-      />
+          name='Add_articles'
+          component={Add_articles}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   )

@@ -7,12 +7,12 @@ const Story_Item = ({ item }) => {
 
   return (
     <TouchableOpacity style={styles.container} >
-      <Image source={{ uri: item.item.img }} style={styles.backgroundImg} />
+      <Image source={{ uri: item.img }} style={styles.backgroundImg} />
       <View style={styles.lopPhu}>
         <View style={styles.imageContainer}>
-          <Image source={{ uri: item.item.avatar }} style={styles.imageAvt} />
+          <Image source={{ uri: item.avatar }} style={styles.imageAvt} />
         </View>
-        <Text style={styles.text}>{item.item.name}</Text>
+        <Text style={styles.text}>{item.name}</Text>
       </View>
     </TouchableOpacity>
 

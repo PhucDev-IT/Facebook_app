@@ -4,6 +4,7 @@ import {
   View,
   TouchableOpacity,
   TextInput,
+  
 } from "react-native";
 import { React, useState, useRef, useEffect, memo } from "react";
 import { Ionicons } from "@expo/vector-icons";
@@ -25,7 +26,7 @@ const Login = ({ navigation }) => {
 
       const userCredential = await firebase
         .auth()
-        .signInWithEmailAndPassword(email, matkhau);
+        .signInWithEmailAndPassword('kunkunyeu3@gmail.com', '123456');
       const userID = userCredential.user.uid;
       // Đăng nhập thành công, user chứa thông tin người dùng đã đăng nhập
       const userDocRef = firebase.firestore().collection("users").doc(userID);

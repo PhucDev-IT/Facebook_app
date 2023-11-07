@@ -84,7 +84,9 @@ const BottomTabNavigate = ({ navigation, route }) => {
       <Tab.Screen name="Chat"
         initialParams={{ navigation, data: route.params }}
         component={Chat} />
-      <Tab.Screen name="Story" component={Story} />
+      <Tab.Screen name="Story"
+        initialParams={{ navigation, data: route.params }}
+        component={Story} />
       <Tab.Screen name="Friend"
         initialParams={{ data: route.params }}
         component={Banbe} />

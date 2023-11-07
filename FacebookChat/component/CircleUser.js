@@ -3,17 +3,26 @@ import React from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { firebase } from '../config'
 import { useEffect } from 'react'
+
+
 const CircleUser = (props) => {
   const navigation = useNavigation();
-  console.log(props.item.MyFriend.userID)
+ 
   const inforRoom = async () => {
-    const query = await firebase.firestore().collection('chats').where('user', 'array-contains', props.item.MyFriend.userID).get();
-    
-    let roomId = null;
-    query.forEach((doc) => {
-      roomId = doc.id;
-    });
-    
+   //Lấy tất cả tin nhắn của người dùng hiện tại, sau đó lọc xem có tin nhắn nào đã được tạo với user kia chưa
+   const queryRoom = await firebase.firestore().collection('chats').where('user','array-contains',props.userCurrent.userID).get();
+
+   let roomId = null;
+
+   queryRoom.forEach((doc)=>{
+     const data = doc.data();
+     for(const item of data.user){
+       if(item === props.item.MyFriend.userID){
+         roomId = doc.id;
+       }
+     }
+   })
+   console.log("Tìm kiếm: ",roomId)
     if(roomId==null){
 
       roomId = props.item.MyFriend.userID > props.userCurrent.userID ? `${props.item.MyFriend.userID + '-' + props.userCurrent.userID}` : `${props.userCurrent.userID + '-' + props.item.MyFriend.userID}`;
@@ -45,7 +54,6 @@ const CircleUser = (props) => {
 export default CircleUser;
 const styles = StyleSheet.create({
   container: {
-
     paddingVertical: 7,
     justifyContent: 'center',
     alignItems: 'center',
@@ -53,7 +61,7 @@ const styles = StyleSheet.create({
 
   },
   btn: {
-    width: 80,
+    width: 85,
     height: 80,
     flexDirection: 'column',
     alignItems: 'center',

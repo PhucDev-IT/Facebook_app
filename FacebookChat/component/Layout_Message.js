@@ -3,25 +3,22 @@ import React from 'react'
 import { TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { useEffect } from 'react'
-const Layout_Message = (item) => {
+const Layout_Message = ({ item,userCurrent }) => {
 
     const navigation = useNavigation();
-    console.log(JSON.stringify(item)+'dtaa')
-  
-    // Bây giờ bạn có thể sử dụng giá trị lastChatMessages ở đây.
-  
-
+    const userChat = item.sentBy.id == userCurrent.userID ? item.sentTo : item.sentBy
+   
     return (
         <View style={styles.container}>
-            <TouchableOpacity 
-            onPress={() => navigation.navigate("ChatDetails")}
-            style={styles.btn}>
+            <TouchableOpacity
+                onPress={() =>  navigation.navigate("ChatDetails", { roomId: item.idRoom, UserCurrent:userCurrent, FriendChat:userChat })}
+                style={styles.btn}>
                 <View style={styles.left}>
-                    <Image style={styles.img} source={{ uri: props.avt }} />
+                    <Image style={styles.img} source={{ uri: userChat.avatar }} />
                 </View>
                 <View style={styles.content}>
-                    <Text style={styles.name}>{props.nameUser}</Text>
-                    <Text style={styles.text}>{props.lastMessage}</Text>
+                    <Text style={styles.name}>{userChat.DisplayName}</Text>
+                    <Text style={styles.text}>{item.sentBy.id == userCurrent.userID?'Bạn: ':''}{item.lastMess}</Text>
                 </View>
             </TouchableOpacity>
         </View>
@@ -36,6 +33,7 @@ const styles = StyleSheet.create({
         marginTop: 5,
         borderBottomWidth: 1,
         borderColor: '#EEEEEE',
+       
 
     },
     btn: {
