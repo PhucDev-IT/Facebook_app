@@ -1,0 +1,21 @@
+npm install @react-navigation/native
+npm install @react-navigation/native-stack
+npm install @react-navigation/bottom-tabs
+npm i react-native-paper
+npm i react-native-radio-buttons-group
+npm i @react-native-community/datetimepicker
+npm i date-fns
+npx expo install expo-task-manager
+npx expo install expo-location
+npm i react-native-gifted-chat
+npx expo install expo-av
+npm i react-native-select-dropdown
+npm i react-native-btr
+npx expo install expo-image-picker
+npx expo install expo-media-library
+npm i expo-camera
+npm i react-native-swiper
+npx expo install firebase
+npx expo install expo-video-thumbnails
+npm i react-native-image-zoom-viewer
+npm install react-native-timeago --force
