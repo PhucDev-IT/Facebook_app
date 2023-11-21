@@ -15,6 +15,7 @@ import Loading_Animation from "../../component/Loading_Animation.js";
 import { UserContext } from '../../UserContext.js';
 
 const Login = ({ navigation }) => {
+
   const [isLoading, setIsLoading] = useState(false);
   const { setUserCurrent } = useContext(UserContext);
 
@@ -22,16 +23,18 @@ const Login = ({ navigation }) => {
   handlerCreate = () => {
     navigation.navigate("Infor_SignUp");
   };
-  const [email, setEmail] = useState("");
-  const [matkhau, setMatkhau] = useState("");
 
-  const DangNhap = async (email, matkhau) => {
+  const [email, setEmail] = useState("");
+  const [password, setpassword] = useState("");
+
+  const DangNhap = async (email, password) => {
     try {
       setIsLoading(true);
 
       const userCredential = await firebase
         .auth()
-        .signInWithEmailAndPassword(email, matkhau);
+        .signInWithEmailAndPassword(email, password);
+
       const userID = userCredential.user.uid;
       // Đăng nhập thành công, user chứa thông tin người dùng đã đăng nhập
       const userDocRef = firebase.firestore().collection("users").doc(userID);
@@ -53,7 +56,6 @@ const Login = ({ navigation }) => {
         });
 
     } catch (error) {
-
       setIsLoading(false)
       alert("Tài khoản hoặc mật khẩu không chính xác")
       console.error("Lỗi khi đăng nhập:", error);
@@ -86,10 +88,10 @@ const Login = ({ navigation }) => {
 
         <View style={[styles.txtName, styles.txtview]}>
           <TextInput
-            value={matkhau}
-            onChangeText={(matkhau) => {
-              setMatkhau(matkhau);
-              if (matkhau != "") {
+            value={password}
+            onChangeText={(password) => {
+              setpassword(password);
+              if (password != "") {
                 setEys(true);
               } else {
                 setEys(false);
@@ -113,7 +115,7 @@ const Login = ({ navigation }) => {
         </View>
 
         <TouchableOpacity
-          onPress={() => DangNhap(email, matkhau)}
+          onPress={() => DangNhap(email.trim(), password.trim())}
           style={styles.button}
         >
           <Text style={{ color: "white", fontSize: 20 }}>Đăng Nhập</Text>

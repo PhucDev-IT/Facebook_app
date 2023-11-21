@@ -1,22 +1,19 @@
 import { StyleSheet, Text, View, TouchableOpacity, TextInput, FlatList } from 'react-native'
-import { useState, useEffect } from 'react'
+import { useState, useEffect,useContext } from 'react'
 import Layout_MyFriend from '../../component/Layout_MyFriend'
 import { Ionicons } from "@expo/vector-icons";
 import { firebase } from '../../config'
-import { useRoute } from "@react-navigation/native"
+import { UserContext } from '../../UserContext';
 const MyFriendScreen = ({ navigation }) => {
 
     const [textInput, setTextInput] = useState('');
     const [myFriends, setMyFriends] = useState([]);
 
-    //Lấy ID người dùng hiện tại
-    const route = useRoute()
-    const idUser = route.params?.userID
-
+    const { userCurrent } = useContext(UserContext);//Lấy ID người dùng hiện tại
     //Lấy danh sách bạn bè
     useEffect(() => {
         const getFriendRequests = async () => {
-            const friends = firebase.firestore().collection('Friends').doc(idUser).collection('userFriends')
+            const friends = firebase.firestore().collection('Friends').doc(userCurrent.userID).collection('userFriends')
 
             const snapshot = await friends.get();
 
@@ -25,7 +22,7 @@ const MyFriendScreen = ({ navigation }) => {
         };
 
         getFriendRequests();
-    }, [idUser]);
+    }, [userCurrent.userID]);
 
 
     const handleBack = () => {
@@ -35,7 +32,7 @@ const MyFriendScreen = ({ navigation }) => {
     //Tìm bạn bè
     const handleSearch = () => {
         try {
-            const querySnapshot = firebase.firestore().collection('Friends').doc(idUser).collection('userFriends').orderBy('DisplayName')
+            const querySnapshot = firebase.firestore().collection('Friends').doc(userCurrent.userID).collection('userFriends').orderBy('DisplayName')
                 .startAt(textInput).endAt(textInput + '\uf8ff')
                 .get();
             const documents = querySnapshot.docs.map(doc => doc.data());

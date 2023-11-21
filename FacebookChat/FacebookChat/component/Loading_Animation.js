@@ -5,7 +5,7 @@ import color from '../color/color'
 const Loading_Animation = () => {
   return (
     <View style={[styles.container, StyleSheet.absoluteFillObject]}>
-        <Image source={require('../assets/loading.gif')}/>
+        <Image source={require('../assets/loading_white.gif')}/>
     </View>
   )
 }

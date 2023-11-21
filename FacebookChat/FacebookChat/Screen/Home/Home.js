@@ -23,6 +23,8 @@ import { UserContext } from '../../UserContext';
 import * as ImagePicker from 'expo-image-picker';
 import * as VideoThumbnails from 'expo-video-thumbnails';
 import Item_Story_Home from "./Item_Story_Home.js";
+import color from "../../color/color.js";
+
 const Home = ({ navigation }) => {
   const { userCurrent } = useContext(UserContext);
   const [user, setUser] = useState(userCurrent);
@@ -275,7 +277,7 @@ export default Home;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#222222",
+    backgroundColor: color.background,
   },
   tintuc: {
     width: 30,

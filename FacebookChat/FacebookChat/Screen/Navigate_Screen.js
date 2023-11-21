@@ -17,6 +17,7 @@ import Add_articles from './Home/Add_articles.js'
 import PreviewStory from './Story/PreviewStory.js';
 import DisplayStories from './Story/DisplayStories.js';
 import DetailsStory from './Story/DetailsStory.js';
+import SeeDetail from '../Screen/Home/SeeDeTail.js'
 const Navigeta_Screen = (props) => {
   const Stack = createNativeStackNavigator();
   return (
@@ -96,6 +97,10 @@ const Navigeta_Screen = (props) => {
         <Stack.Screen
           name='DetailsStory'
           component={DetailsStory}
+        />
+         <Stack.Screen
+          name='SeeDetail'
+          component={SeeDetail}
         />
       </Stack.Navigator>
     </NavigationContainer>

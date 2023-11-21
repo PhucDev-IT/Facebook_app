@@ -64,12 +64,12 @@ const Chat = () => {
                   sentTo: {
                     DisplayName: data.sentTo.DisplayName,
                     avatar: data.sentTo.avatar,
-                    id: data.sentTo.userID,
+                    userID: data.sentTo.userID,
                   },
                   sentBy: {
                     DisplayName: data.sentBy.DisplayName,
                     avatar: data.sentBy.avatar,
-                    id: data.sentBy.userID,
+                    userID: data.sentBy.userID,
                   },
                 });
         
@@ -110,7 +110,7 @@ const Chat = () => {
           style={styles.listMess}
           data={messages}
           keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => <Layout_Message item={item} userCurrent={userCurrent} />}
+          renderItem={({ item }) => <Layout_Message item={item} />}
         />
       </View>
 

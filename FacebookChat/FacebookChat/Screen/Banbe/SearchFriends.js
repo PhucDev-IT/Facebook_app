@@ -1,18 +1,18 @@
 import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native'
 import React from 'react'
 import AddFriend from '../../component/AddFriend'
-import { useState, useEffect } from 'react'
+import { useState, useContext } from 'react'
 import { Ionicons } from "@expo/vector-icons";
 import { firebase } from '../../config'
 import { FlatList } from 'react-native'
-import { useRoute } from "@react-navigation/native"
+import { UserContext } from '../../UserContext';
 const SearchFriends = ({ navigation }) => {
   const [textInput, setTextInput] = useState('');
   const [listUser, setListUser] = useState([]);
 
   //Lấy ID người dùng hiện tại
-    const route = useRoute()
-    const UserCurrent = route.params.data
+  const { userCurrent } = useContext(UserContext);//Lấy ID người dùng hiện tại
+
 
   //Tìm kiếm bạn bè
   const fetchData = async () => {
@@ -23,15 +23,15 @@ const SearchFriends = ({ navigation }) => {
       const documents = querySnapshot.docs.map(doc => doc.data());
 
       //Lấy danh sách bạn bè đã kết bạn
-      const friendsSnapshot = await firebase.firestore().collection('Friends').doc(UserCurrent.userID).collection('userFriends').get();
+      const friendsSnapshot = await firebase.firestore().collection('Friends').doc(userCurrent.userID).collection('userFriends').get();
       const friendIDs = friendsSnapshot.docs.map(doc => doc.data().MyFriend.userID);
       
       //Lây danh sách user hiện tại đang yêu cầu kết bạn nhưng bị bơ
-      const friendRequests = await firebase.firestore().collection('friendRequests').where('userSend.userID','==',UserCurrent.userID).get();
+      const friendRequests = await firebase.firestore().collection('friendRequests').where('userSend.userID','==',userCurrent.userID).get();
       const firendRequestID = friendRequests.docs.map(doc => doc.data().idReceiver);
 
       //Lấy danh sách đang chờ user hiện tại xác nhận kết bạn
-      const listChoXacNhan = await firebase.firestore().collection('friendRequests').where('idReceiver', '==', UserCurrent.userID).get();
+      const listChoXacNhan = await firebase.firestore().collection('friendRequests').where('idReceiver', '==', userCurrent.userID).get();
       const IDChoXacNhans = listChoXacNhan.docs.map(doc => doc.data().userSend.userID)
 
      // Tạo danh sách người dùng với trạng thái "Thêm" hoặc "Hủy kết bạn"
@@ -63,7 +63,7 @@ const SearchFriends = ({ navigation }) => {
 
 
   const handleOnSubmitEditing = () => {
-   // if(textInput!='')
+    if(textInput!='')
       fetchData();
   };
 
@@ -93,7 +93,7 @@ const SearchFriends = ({ navigation }) => {
         <FlatList
           data={listUser}
             keyExtractor={(item, index) => index.toString()} // Assuming each document has a unique "id" field
-          renderItem={(item) => <AddFriend item = {item} UserCurrent={UserCurrent} /> }
+          renderItem={(item) => <AddFriend item = {item} userCurrent={userCurrent} /> }
         />
       </View>
     </View>

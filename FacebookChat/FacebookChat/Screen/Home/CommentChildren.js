@@ -93,7 +93,7 @@ const CommentChildren = (props) => {
   return (
     <View style={styles.container}>
       <TouchableOpacity
-        onPress={() => props.navigation.navigate("SeeDeTail", user)}
+        onPress={() => props.navigation.navigate("SeeDetail", user)}
       >
         <Image
           style={{ width: 35, height: 35, borderRadius: 35 }}

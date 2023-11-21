@@ -115,7 +115,7 @@ const Story = ({ navigation, route }) => {
 
         <View>
           <TouchableOpacity onPress={pickVideo}>
-            <Ionicons name="add-circle-outline" size={35} color="black" />
+            <Ionicons name="add-circle-outline" size={35} color="#CC99FF" />
           </TouchableOpacity>
         </View>
       </View>

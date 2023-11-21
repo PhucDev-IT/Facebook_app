@@ -10,8 +10,9 @@ import { firebase } from '../../config'
 import { UserContext } from '../../UserContext';
 import { useEffect } from 'react';
 import { useState } from 'react';
-import { QuerySnapshot } from 'firebase/firestore';
-import { List } from 'react-native-paper';
+import { FontAwesome } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
+import { TextInput } from 'react-native-paper';
 const DisplayStories = ({ route }) => {
     const { item } = route.params;
     const { userCurrent } = useContext(UserContext);
@@ -25,9 +26,34 @@ const DisplayStories = ({ route }) => {
         navigation.goBack();
     }
 
+    const customSendMessage = () => {
+        return (
+            <View style={{flexDirection:'row',height:35,justifyContent:'center',alignItems:'center',marginBottom:20}}>
+                <TouchableOpacity>
+                    <Feather name="camera" size={23} color={color.colorBottomChat} style={{ marginHorizontal: 10, marginBottom: 10 }} />
+                </TouchableOpacity>
+                <TouchableOpacity >
+                    <FontAwesome name="file-photo-o" size={23} color={color.colorBottomChat} style={{ marginHorizontal: 10, marginBottom: 10 }} />
+                </TouchableOpacity>
+                <TextInput
+                    placeholder="Email"                
+                    mode='outlined'
+                    onChangeText={text => setEmail(text)}
+                    style={{borderWidth: 1,height:35,width:'60%'}}
+                />
+                <TouchableOpacity >
+                   <Text style={{fontSize:25}}>👍</Text>
+                </TouchableOpacity>
+            </View>
+        )
+    }
+
+
+
     const showViewFriends = () => {
         return (
             <View style={{ flexDirection: 'row', }}>
+
                 <View style={styles.inputForm}>
                     <Text style={{ color: color.white, fontWeight: '400' }}>Gửi tin nhắn</Text>
                 </View>

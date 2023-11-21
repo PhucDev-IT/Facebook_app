@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect,useContext, useState } from 'react'
 import { Bubble, GiftedChat, InputToolbar, Send } from 'react-native-gifted-chat'
 import { firebase } from '../../config'
 import { useCallback } from 'react'
@@ -11,13 +11,14 @@ import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native'
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system'
-
+import { UserContext } from '../../UserContext';
 import { Video } from 'expo-av';
 
 const ChatDetails = ({ route }) => {
   const [messages, setMessages] = useState([])
-  const { roomId, UserCurrent, FriendChat } = route.params;
+  const { roomId, FriendChat } = route.params;
   const navigation = useNavigation();
+  const { userCurrent } = useContext(UserContext);
 
   const handleBack = () => {
     navigation.goBack();
@@ -58,7 +59,7 @@ const ChatDetails = ({ route }) => {
     const msg = messageArrays[0];
     const message = {
       ...msg,
-      sentBy: UserCurrent,
+      sentBy: userCurrent,
       sentTo: FriendChat
     }
 
@@ -67,7 +68,7 @@ const ChatDetails = ({ route }) => {
     )
 
     await firebase.firestore().collection('chats').doc(roomId).set({
-      user: [UserCurrent.userID, FriendChat.userID]
+      user: [userCurrent.userID, FriendChat.userID]
 
     }).then(() => {
       // Sau khi tài liệu "chats" được tạo hoặc cập nhật thành công, bạn có thể thêm dữ liệu vào collection "conversation".
@@ -181,27 +182,27 @@ const ChatDetails = ({ route }) => {
     if(uriImg==null && videoPath!=null){
       message = {
         video:videoPath,
-        sentBy: UserCurrent,
+        sentBy: userCurrent,
         sentTo: FriendChat,
         createdAt: new Date(),
         user:{
-          _id:UserCurrent.userID
+          _id:userCurrent.userID
         }
       }
     }else if(uriImg!=null && videoPath==null){
       message = {
         image:uriImg,
-        sentBy: UserCurrent,
+        sentBy: userCurrent,
         sentTo: FriendChat,
         createdAt: new Date(),
         user:{
-          _id:UserCurrent.userID
+          _id:userCurrent.userID
         }
       }
     }
     
     await firebase.firestore().collection('chats').doc(roomId).set({
-      user: [UserCurrent.userID, FriendChat.userID]
+      user: [userCurrent.userID, FriendChat.userID]
 
     }).then(() => {
       // Sau khi tài liệu "chats" được tạo hoặc cập nhật thành công, bạn có thể thêm dữ liệu vào collection "conversation".
@@ -329,7 +330,7 @@ const ChatDetails = ({ route }) => {
           messages={messages}
           onSend={newMessage => onSend(newMessage)}
           user={{
-            _id: UserCurrent.userID,
+            _id: userCurrent.userID,
           }}
           placeholder={'Nhập tin nhắn'}
 

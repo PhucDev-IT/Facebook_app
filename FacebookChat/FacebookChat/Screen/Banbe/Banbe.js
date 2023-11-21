@@ -17,11 +17,11 @@ const Banbe = ({ navigation }) => {
 
 
   const handleClickSearch = () => {
-    navigation.navigate("SearchFriends", { data: route.params.data })
+    navigation.navigate("SearchFriends")
   }
 
   const handleClickMyFriend = () => {
-    navigation.navigate("MyFriendScreen", { userID: idUserCurrent })
+    navigation.navigate("MyFriendScreen")
   }
 
   //Lấy danh sách lời mời kết bạn
@@ -94,7 +94,7 @@ const Banbe = ({ navigation }) => {
         <FlatList
           data={friendRequests}
           keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => <Layout_Confirm_Friend item={item} onAccept={handleAcceptFriendRequest} UserCurrent={route.params.data} />}
+          renderItem={({ item }) => <Layout_Confirm_Friend item={item} onAccept={handleAcceptFriendRequest} UserCurrent={userCurrent} />}
         />
       </View>
     </View>
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: 10,
     borderBottomWidth: 1,
-    borderColor: 'black',
+    borderColor: '#996600',
   },
   body: {
     flex: 5,
