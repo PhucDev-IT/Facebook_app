@@ -25,7 +25,8 @@ export default function App() {
     <SafeAreaView style={{ flex: 1 }}>
       <StatusBar
         animated={true}
-        backgroundColor="black"
+        backgroundColor="#ffffff"
+        barStyle="dark-content"
         hidden={hidden}
       />
         <UserProvider>

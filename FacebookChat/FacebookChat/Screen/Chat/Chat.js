@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, FlatList } from 'react-native'
+import { StyleSheet, Text, View, FlatList,RefreshControl } from 'react-native'
 import React, { useEffect,useContext } from 'react'
 import CircleUser from '../../component/CircleUser'
 import { TouchableOpacity } from 'react-native'
@@ -11,7 +11,15 @@ const Chat = () => {
   const [myFriends, setMyFriends] = useState([]);
   const [messages, setMessages] = useState([]);
   const { userCurrent } = useContext(UserContext);
+  const [refreshing, setRefreshing] = React.useState(false);
 
+  //Refreshing layout
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
 
   //Phân trang số lượng đoạn chats
   const currentPage = 1;
@@ -89,7 +97,7 @@ const Chat = () => {
 
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} >
       <View style={styles.header}>
         <Text style={{ fontSize: 25, fontWeight: 'bold' }}>Đoạn chat</Text>
         <TouchableOpacity style={styles.btnSearch}>
@@ -102,7 +110,10 @@ const Chat = () => {
           horizontal={true}
           data={myFriends}
           keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => <CircleUser item={item} userCurrent={userCurrent} />}>
+          renderItem={({ item }) => <CircleUser item={item} userCurrent={userCurrent} />}
+          refreshControl=
+          { <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+          >
         </FlatList>
       </View>
       <View style={styles.body}>

@@ -14,7 +14,7 @@ import {
   KeyboardAvoidingView,
 } from "react-native";
 import Coment from "./Comment.js";
-import { React, useState, useRef, useEffect, memo } from "react";
+import { React, useState, useContext, useEffect, memo } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import { FontAwesome, EvilIcons, AntDesign } from "@expo/vector-icons";
 import Swiper from "react-native-swiper";
@@ -23,11 +23,15 @@ import { Ionicons } from "@expo/vector-icons";
 import ImageViewer from "react-native-image-zoom-viewer";
 import { firebase } from "../../config.js";
 import TimeAgo from "react-native-timeago";
+import color from "../../color/color.js";
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native'
+import { UserContext } from '../../UserContext';
 const FlatItem = memo((props) => {
-  // console.log('hahahah');
-  // console.log(JSON.stringify(props.item)+'phan cap ')
+  const navigation = useNavigation();
   const data = props.item;
-  const [User, setUser] = useState();
+  const { userCurrent } = useContext(UserContext);
+  const [User, setUser] = useState(userCurrent);
 
   const handleUser = async (id) => {
     const userRef = firebase.firestore().collection("users").doc(id);
@@ -40,16 +44,6 @@ const FlatItem = memo((props) => {
       return null;
     }
   };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const userData = await handleUser(data.userID);
-      if (userData) {
-        setUser(userData);
-      }
-    };
-    fetchData();
-  }, []);
 
   const [selectImage, setImageUpload] = useState(data.images);
   const [isLiked, setIsLiked] = useState(false);
@@ -107,7 +101,7 @@ const FlatItem = memo((props) => {
 
   const tym = async () => {};
   const DetaiHandress = () => {
-    props.navigation.navigate("SeeDeTail", User);
+    navigation.navigate("SeeDetails");
   };
 
   const [isViewerOpen, setIsViewerOpen] = useState(false);
@@ -354,22 +348,22 @@ const FlatItem = memo((props) => {
         style={{
           flexDirection: "row",
           justifyContent: "space-around",
-          backgroundColor: "#444444",
+          backgroundColor: color.white,
         }}
       >
-        <Text style={{ fontSize: 20, color: "white" }}>
+        <Text style={{ fontSize: 20, color: "#555555" }}>
           {numberLike >= 1000
             ? (numberLike / 1000).toFixed(1) + "k"
             : numberLike}{" "}
           Like
         </Text>
-        <Text style={{ fontSize: 20, color: "white" }}>
+        <Text style={{ fontSize: 20, color: "#555555" }}>
           {" "}
           {soluongCmt} Bình luận
         </Text>
       </View>
       <View
-        style={{ width: "100%", height: 1, backgroundColor: "white" }}
+        style={{ width: "100%", height: 1,marginTop:3, backgroundColor: "#DDDDDD" }}
       ></View>
       <View style={styles.view8}>
         <TouchableOpacity
@@ -380,10 +374,10 @@ const FlatItem = memo((props) => {
             name="heart"
             size={24}
             color="white"
-            color={isLiked ? "red" : "white"}
+            color={isLiked ? "red" : "#EEEEEE"}
           />
 
-          <Text style={{ color: "white" }}> Like</Text>
+          <Text style={{ color: "black" }}> Like</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={{ flexDirection: "row", alignItems: "center" }}
@@ -392,8 +386,8 @@ const FlatItem = memo((props) => {
             setIsVisible(true);
           }}
         >
-          <EvilIcons name="comment" size={34} color="white" />
-          <Text style={{ color: "white" }}> Comemnt</Text>
+          <EvilIcons name="comment" size={34} color="black" />
+          <Text style={{ color: "black" }}> Comemnt</Text>
         </TouchableOpacity>
 
         <Modal
@@ -472,8 +466,8 @@ const FlatItem = memo((props) => {
             onShare();
           }}
         >
-          <FontAwesome name="share" size={24} color="white" />
-          <Text style={{ color: "white" }}> share</Text>
+         <MaterialCommunityIcons name="share-all-outline" size={24} color="black" />
+          <Text style={{ color: "black" }}> share</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -483,8 +477,10 @@ export default FlatItem;
 const styles = StyleSheet.create({
   contain: {
     flex: 1,
-    backgroundColor: "#222222",
+    backgroundColor: color.background,
     marginTop: 10,
+    elevation:9,
+    paddingTop:10
   },
   view1: {
     flexDirection: "row",
@@ -558,16 +554,17 @@ const styles = StyleSheet.create({
   view8: {
     height: 50,
     flexDirection: "row",
-    backgroundColor: "#444444",
+    backgroundColor:color.white,
     width: "100%",
     justifyContent: "space-around",
     alignItems: "center",
   },
   img3: {
-    width: 39,
+    width: 44,
     height: 44,
     borderRadius: 100,
     marginHorizontal: 6,
+   
   },
   view10: {
     justifyContent: "center",
@@ -579,10 +576,10 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   txtx: {
-    color: "white",
+    color: "black",
   },
   title: {
-    color: "white",
+    color: "black",
     fontSize: 20,
     fontWeight: "600",
   },

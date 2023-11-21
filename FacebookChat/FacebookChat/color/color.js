@@ -1,5 +1,5 @@
 export default{
-   background: '#222222',
+   background: '#FFFFFF',
    primary:'#3b5998',
    white:'#ffffff',
    placeholderTextColor: "#BBBBBB",

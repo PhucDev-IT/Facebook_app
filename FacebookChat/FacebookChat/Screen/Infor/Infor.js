@@ -11,10 +11,6 @@ import {
   FlatList,
 } from "react-native";
 import { React, useState, useCallback, useEffect, useContext } from "react";
-import { FontAwesome5 } from "@expo/vector-icons";
-import { Ionicons } from "@expo/vector-icons";
-import { collection, getDocs } from "firebase/firestore";
-import { FontAwesome, EvilIcons, AntDesign } from "@expo/vector-icons";
 import FlatItem from "../Home/FlatItem.js";
 import { firebase } from "../../config.js";
 import { useFocusEffect } from "@react-navigation/native";
@@ -24,6 +20,17 @@ const Infor = ({ navigation }) => {
   const [user, setUser] = useState(userCurrent);
 
   const [image, setImage] = useState(user.avatar);
+
+
+  //Đăng xuất
+  const logout = ()=>{
+    firebase.auth().signOut().then(() => {
+      navigation.navigate("SplashScreen")
+    }).catch((error) => {
+      // An error happened.
+    });
+  }
+
   useFocusEffect(
     useCallback(() => {
       const Selectuser = async () => {
@@ -95,8 +102,10 @@ const Infor = ({ navigation }) => {
           <Text style={styles.txt}>{user.DisplayName}</Text>
         </View>
         <View style={styles.view4}>
-          <TouchableOpacity style={styles.btn1}>
-            <Text style={styles.txt1}>+ Add to story</Text>
+          <TouchableOpacity 
+          onPress={logout}
+          style={styles.btn1}>
+            <Text style={styles.txt1}>+ Đăng xuất</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
@@ -195,7 +204,6 @@ const styles = StyleSheet.create({
   avatar: {
     width: "100%",
     height: 249,
-
     backgroundColor: "#333333",
   },
   usercnhan: {

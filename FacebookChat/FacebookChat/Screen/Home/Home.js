@@ -10,8 +10,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Modal,
-  BackHandler,
-  Alert,
+  BackHandler ,
   RefreshControl,
 } from "react-native";
 import { React, useState, useEffect, useContext, memo, useCallback } from "react";
@@ -29,6 +28,7 @@ const Home = ({ navigation }) => {
   const { userCurrent } = useContext(UserContext);
   const [user, setUser] = useState(userCurrent);
   const [stories,setStories] = useState([]);
+
   const handlerAdd_articles = () => {
     navigation.navigate("Add_articles", user);
   };
@@ -84,7 +84,7 @@ const Home = ({ navigation }) => {
   }, []);
 
 
-  //Lấy story của người dùng
+  //----------------------------Lấy story của người dùng---------------------------
   const getMyStories = async () => {
     try {
       const querySnapshot = await firebase.firestore().collection('stories').doc(userCurrent.userID).collection("itemstories").get();
@@ -148,7 +148,7 @@ const Home = ({ navigation }) => {
     fetchData();
   }, []);
 
-  //Đăng story
+  //--------------------------Đăng story----------------------------------------
   const ChooseVideoPushStory = async () => {
     try {
       // No permissions request is necessary for launching the image library
@@ -202,24 +202,40 @@ const Home = ({ navigation }) => {
       </TouchableOpacity>
     );
   };
+
+
+  //------------------------------------------Chặn quay về màn hình trước đó
+  useEffect(() => {
+    const handleBackButton = () => true;
+    BackHandler.addEventListener("hardwareBackPress", handleBackButton);
+    return () => {
+        BackHandler.removeEventListener(
+            "hardwareBackPress",
+            handleBackButton
+        );
+    };
+}, []);
+//--------------------------------------------------
   const FlatStory = memo(() => {
     return (
       <View>
         <View style={styles.container}>
           <View style={styles.topter}>
-            <Text style={{ color: "white", fontSize: 25, fontWeight: "700" }}>
+            <Text style={{ color: "#0866FF", fontSize: 25, fontWeight: "700" }}>
               FaceBook
             </Text>
             <View style={styles.add}>
-              <Feather name="bell" size={30} color="white" />
-              <Feather name="search" size={30} color="white" />
+              <Feather name="bell" size={30} color="#0866FF" />
+              <TouchableOpacity onPress={()=>navigation.navigate("SearchFriends")}>
+              <Feather name="search" size={30} color="#0866FF" />
+              </TouchableOpacity>
             </View>
           </View>
-          <View style={styles.thanhngang}></View>
+          
           <View style={styles.thanhbar}>
             <View style={styles.thanhbar1}>
               <Image
-                style={styles.thanhbar1}
+                style={styles.img_thanhbar1}
                 source={{ uri: user.avatar }}
               ></Image>
             </View>
@@ -227,13 +243,14 @@ const Home = ({ navigation }) => {
               style={styles.trangthai}
               onPress={handlerAdd_articles}
             >
-              <Text style={{ color: "white" }}>Trạng thái của bạn</Text>
+              <Text style={{ color: "black" }}>Trạng thái của bạn</Text>
             </TouchableOpacity>
             <Ionicons name="images-outline" size={30} color="green" />
           </View>
-          <View></View>
+         
         </View>
-        <View style={{flexDirection:'row'}}>
+
+        <View style={{flexDirection:'row',marginTop:10,backgroundColor:color.white,elevation:8,paddingVertical:10}}>
         {DefaultAddStory()}
           <FlatList
           data={stories}
@@ -277,7 +294,9 @@ export default Home;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: color.background,
+    backgroundColor: color.white,
+    elevation:9,
+    paddingTop:5
   },
   tintuc: {
     width: 30,
@@ -313,25 +332,29 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   thanhbar1: {
-    width: 40,
-    height: 40,
+    width: 50,
+    height: 50,
     borderRadius: 50,
-    backgroundColor: "green",
+    elevation:6
+  },
+  img_thanhbar1:{
+    width: 50,
+    height: 50,
+    borderRadius: 50,
   },
   thanhbar: {
     justifyContent: "space-around",
     alignItems: "center",
     flexDirection: "row",
     width: "100%",
-    height: 80,
-    marginTop: -5,
+    height: 80,    
   },
   trangthai: {
     width: 220,
     height: 40,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: "white",
+    borderColor: "black",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -344,5 +367,7 @@ const styles = StyleSheet.create({
     position: "relative",
     marginHorizontal: 6,
     backgroundColor: "white",
+    elevation:6,
+    borderColor:'#AAAAAA'
   },
 });

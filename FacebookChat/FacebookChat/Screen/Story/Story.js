@@ -27,7 +27,7 @@ const Story = ({ navigation, route }) => {
           },
           idStory: doc.id,
           data: doc.data(),
-        });            
+        });
       });
       return listStory;
     } catch (error) {
@@ -35,7 +35,7 @@ const Story = ({ navigation, route }) => {
       return [];
     }
   }
-  
+
   const getStoriesMyFriends = async () => {
     try {
       let listStory = [];
@@ -43,7 +43,7 @@ const Story = ({ navigation, route }) => {
       for (const doc of querySnapshot.docs) {
         const query = await firebase.firestore().collection('stories').doc(doc.data().MyFriend.userID).collection('itemstories').get();
         query.forEach((docRef) => {
-       
+
           listStory.push({
             poster: {
               id: doc.data().MyFriend.userID,
@@ -53,7 +53,7 @@ const Story = ({ navigation, route }) => {
             idStory: docRef.id,
             data: docRef.data(),
           });
-        });   
+        });
       }
       return listStory;
     } catch (error) {
@@ -61,7 +61,7 @@ const Story = ({ navigation, route }) => {
       return [];
     }
   }
-  
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -73,10 +73,10 @@ const Story = ({ navigation, route }) => {
         console.error('Error fetching data:', error);
       }
     };
-  
+
     fetchData();
   }, []);
-  
+
 
 
   //Chọn video

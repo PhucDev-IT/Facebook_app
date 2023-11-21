@@ -22,17 +22,17 @@ const PreviewStory = ({ route }) => {
 
     const handleUploadVideo = async () => {
         pushSotry();
+        navigation.goBack();
     };
-
 
     //Đẩy video  lên firebase
     const pushSotry = async () => {
-       const urlStory = await pushImage("stories",videoPath);
-       const urlThumbnail =  await pushImage("thumbnail",thumbnailPath);
-       await addStory(urlStory,urlThumbnail);
+        const urlStory = await pushImage("stories", videoPath);
+        const urlThumbnail = await pushImage("thumbnail", thumbnailPath);
+        await addStory(urlStory, urlThumbnail);
     }
 
-    const pushImage = async (pathParent,uriImg)=>{
+    const pushImage = async (pathParent, uriImg) => {
         try {
             const { uri } = await FileSystem.getInfoAsync(uriImg);
             const blob = await new Promise((resolve, reject) => {
@@ -48,12 +48,12 @@ const PreviewStory = ({ route }) => {
                 xhr.send();
             });
             const filename = `${Date.now()}`;
-            const ref = firebase.storage().ref().child(pathParent+'/' + filename);
+            const ref = firebase.storage().ref().child(pathParent + '/' + filename);
             await ref.put(blob);
 
             // Lấy download URL của tệp đã tải lên
             const downloadURL = await ref.getDownloadURL();
-           return downloadURL;
+            return downloadURL;
 
         } catch (error) {
             console.log('Có lỗi khi upload photo: ', error)
@@ -61,7 +61,7 @@ const PreviewStory = ({ route }) => {
     }
 
     //Thêm story vào firebase
-    const addStory = async (urlStory,urlThumbnail) => {
+    const addStory = async (urlStory, urlThumbnail) => {
 
         const now = new Date();
         const endTime = add(now, { days: 1 });

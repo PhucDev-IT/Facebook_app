@@ -8,7 +8,7 @@ const SplashScreen = ({ navigation }) => {
   useEffect(() => {
     const checkUserLoginStatus = async () => {
       // Đợi Firebase khởi tạo
-      await firebase.auth().onAuthStateChanged((user) => {
+      firebase.auth().onAuthStateChanged((user) => {
         if (user) {
           var uid = user.uid;
           setIsLogin(true)
@@ -20,7 +20,7 @@ const SplashScreen = ({ navigation }) => {
 
         // Sau 2 giây, điều hướng đến màn hình chính hoặc màn hình khác
         setTimeout(() => {
-          { isLogin ? navigation.navigate("BottomTabNavigate",userID) : navigation.navigate("Login") }
+          { isLogin ? navigation.navigate("BottomTabNavigate", userID) : navigation.navigate("Login") }
         }, 2000); // 2000ms = 2 giây
       });
     };

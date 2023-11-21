@@ -35,7 +35,8 @@ const styles = StyleSheet.create({
         height: 150,
         borderRadius: 13,
         marginHorizontal: 6,
-        elevation: 7
+        elevation:4,
+        borderColor:'#AAAAAA',
 
     },
     backgroundImg: {
@@ -79,7 +80,8 @@ const styles = StyleSheet.create({
     },
     lopPhu: {
         width: '100%',
-        position: 'absolute'
+        position: 'absolute',
+        borderRadius:13
     },
 
 })
