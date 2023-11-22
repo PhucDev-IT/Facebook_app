@@ -1,23 +1,25 @@
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native'
-import React from 'react'
+import React,{useContext} from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { firebase } from '../config'
 import { useEffect } from 'react'
-
+import { UserContext } from '../UserContext';
+import { useState } from 'react'
 
 const CircleUser = (props) => {
   const navigation = useNavigation();
- 
+  const { userCurrent } = useContext(UserContext);
+  const [isOnline,setIsOnline] = useState(false)
   const inforRoom = async () => {
    //Lấy tất cả tin nhắn của người dùng hiện tại, sau đó lọc xem có tin nhắn nào đã được tạo với user kia chưa
-   const queryRoom = await firebase.firestore().collection('chats').where('user','array-contains',props.userCurrent.userID).get();
+   const queryRoom = await firebase.firestore().collection('chats').where('user','array-contains',userCurrent.userID).get();
 
    let roomId = null;
 
    queryRoom.forEach((doc)=>{
      const data = doc.data();
      for(const item of data.user){
-       if(item === props.item.MyFriend.userID){
+       if(item === props.item.userID){
          roomId = doc.id;
        }
      }
@@ -25,12 +27,25 @@ const CircleUser = (props) => {
    console.log("Tìm kiếm: ",roomId)
     if(roomId==null){
 
-      roomId = props.item.MyFriend.userID > props.userCurrent.userID ? `${props.item.MyFriend.userID + '-' + props.userCurrent.userID}` : `${props.userCurrent.userID + '-' + props.item.MyFriend.userID}`;
+      roomId = props.item.userID > userCurrent.userID ? `${props.item.userID + '-' + userCurrent.userID}` : `${userCurrent.userID + '-' + props.item.userID}`;
     }
 
     return roomId;
   };
 
+
+  useEffect(()=>{
+    const fetchChatData = async () => {
+      var starCountRef = firebase.database().ref('users/' + userCurrent.userID +'/isOnline'  );
+      starCountRef.on('value', (snapshot) => {
+        const data = snapshot.val();
+        setIsOnline(data);
+      });
+    }
+    fetchChatData();
+    }, [userCurrent.userID]);
+    
+  
 
   return (
 
@@ -38,12 +53,14 @@ const CircleUser = (props) => {
     <TouchableOpacity
       onPress={async () => {
         const roomId = await inforRoom();
-        navigation.navigate("ChatDetails", { roomId: roomId, UserCurrent:props.userCurrent, FriendChat:props.item.MyFriend });
+        navigation.navigate("ChatDetails", { roomId: roomId, FriendChat:props.item });
       }}
       style={styles.btn}
     >
-      <Image style={styles.img} source={{ uri: props.item.MyFriend.avatar }} />
-      <Text style={styles.name}>{props.item.MyFriend.DisplayName}</Text>
+      <Image style={styles.img} source={{ uri: props.item.avatar }} />
+      <Text style={styles.name}>{props.item.DisplayName}</Text>
+
+      {isOnline?<Image source={require('../assets/icon_online.png')} style={styles.iconOnline} />:null}
     </TouchableOpacity>
   </View>
   
@@ -80,5 +97,12 @@ const styles = StyleSheet.create({
     marginTop: 10,
     textAlign: 'center',
     bottom: 0
-  }
+  },
+  iconOnline:{
+    width:20,
+    height:20,
+    position:'absolute',
+    bottom:25,
+    right:10
+  },
 })

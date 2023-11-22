@@ -18,7 +18,7 @@ import PreviewStory from './Story/PreviewStory.js';
 import DisplayStories from './Story/DisplayStories.js';
 import DetailsStory from './Story/DetailsStory.js';
 import SeeDetails from './Home/SeeDetails.js';
-
+import Skeleton_Stories from '../Skeleton/Skeleton_Stories.js';
 const Navigeta_Screen = (props) => {
   const Stack = createNativeStackNavigator();
   return (
@@ -30,8 +30,8 @@ const Navigeta_Screen = (props) => {
         screenOptions={{ headerShown: false }}
       >
         <Stack.Screen
-          name='TestScreen'
-          component={TestScreen}
+          name='Skeleton_Stories'
+          component={Skeleton_Stories}
         />
 
         <Stack.Screen

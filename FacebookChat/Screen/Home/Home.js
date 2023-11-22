@@ -29,9 +29,25 @@ const Home = ({ navigation }) => {
   const [user, setUser] = useState(userCurrent);
   const [stories,setStories] = useState([]);
 
+
+
+  //---------------------- CẬP NHẬT TRẠNG THÁI NGƯỜI DÙNG ONL------------
+  
+  useEffect(()=>{
+    const updateStatusOnline = async ()=> {
+      firebase.database().ref('users/' + user.userID).set({
+        isOnline:true
+      });
+    }
+    updateStatusOnline();
+  },[])
+
   const handlerAdd_articles = () => {
     navigation.navigate("Add_articles", user);
   };
+
+  //-------------------LẤY BÀI VIẾT ------------------------------
+
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = useCallback(() => {
     const getPosts = async () => {
@@ -53,7 +69,7 @@ const Home = ({ navigation }) => {
       }
     };
     getPosts();
-
+    
     setRefreshing(true);
     setTimeout(() => {
       setRefreshing(false);
@@ -190,11 +206,12 @@ const Home = ({ navigation }) => {
             width: "100%",
             flex: 0.7,
             height: "70%",
+            borderRadius:13
           }}
           source={{ uri: user.avatar }}
         ></Image>
         <View style={styles.tintuc}>
-          <Text style={{ alignItems: "center" }}>+</Text>
+          <Text style={{ alignItems: "center",fontWeight:'bold' }}>+</Text>
         </View>
         <View style={styles.thantin}>
           <Text style={{ alignItems: "center", marginTop: 10 }}> Tạo tin </Text>
@@ -266,7 +283,7 @@ const Home = ({ navigation }) => {
     );
   });
 
-  return (
+    return (
     <View style={styles.container}>
       <FlatList
         data={data_Articles}
@@ -279,13 +296,13 @@ const Home = ({ navigation }) => {
               item={item}
               index={index}
               userDn={user.userID}
-              navigation={navigation} />
+              navigation={navigation}            />
           );
         }}
         refreshControl=
         {<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       >
-
+       
       </FlatList>
     </View>
   );

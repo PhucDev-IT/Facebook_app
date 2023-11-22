@@ -9,14 +9,14 @@ const Layout_Confirm_Friend = (props) => {
   const handleAccept = async () => {
     try {
       // Thực hiện xác nhận cho người dùng hiện tại
-      await firebase.firestore().collection('Friends').doc(props.UserCurrent.userID).collection('userFriends')
-        .add({
+      await firebase.firestore().collection('Friends').doc(props.UserCurrent.userID).collection('userFriends').doc(props.item.userSend.userID)
+        .set({
           MyFriend: props.item.userSend
         });
 
       // Thực hiện xác nhận cho người gửi
-      await firebase.firestore().collection('Friends').doc(props.item.userSend.userID).collection('userFriends')
-        .add({
+      await firebase.firestore().collection('Friends').doc(props.item.userSend.userID).collection('userFriends').doc(props.UserCurrent.userID)
+        .set({
           MyFriend: props.UserCurrent
         });
 

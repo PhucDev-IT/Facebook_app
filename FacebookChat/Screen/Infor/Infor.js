@@ -25,6 +25,12 @@ const Infor = ({ navigation }) => {
   //Đăng xuất
   const logout = ()=>{
     firebase.auth().signOut().then(() => {
+  
+        firebase.database().ref('users/' + user.userID).set({
+          isOnline:false
+        });
+
+
       navigation.navigate("SplashScreen")
     }).catch((error) => {
       // An error happened.

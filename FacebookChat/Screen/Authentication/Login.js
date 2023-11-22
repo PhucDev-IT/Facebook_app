@@ -23,7 +23,7 @@ const Login = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   const { setUserCurrent } = useContext(UserContext);
   const [showPassword, setShowPassword] = useState(false);
-
+  const [user,setUser] = useState();
   handlerCreate = () => {
     navigation.navigate("Infor_SignUp");
   };
@@ -56,7 +56,7 @@ const Login = ({ navigation }) => {
 
       const userCredential = await firebase
         .auth()
-        .signInWithEmailAndPassword(email, password);
+        .signInWithEmailAndPassword('a@gmail.com', '123456');
 
       const userID = userCredential.user.uid;
       // Đăng nhập thành công, user chứa thông tin người dùng đã đăng nhập
@@ -66,7 +66,7 @@ const Login = ({ navigation }) => {
           // Dữ liệu người dùng được tìm thấy
           const userData = doc.data();
           setIsLoading(false)
-          setUserCurrent(userData);
+           setUserCurrent(userData);
           navigation.navigate("BottomTabNavigate");
         } else {
           // Người dùng không tồn tại trong Firestore
@@ -84,6 +84,8 @@ const Login = ({ navigation }) => {
       console.error("Lỗi khi đăng nhập:", error);
       throw error; // Xử lý lỗi hoặc trả về lỗi
     }
+
+    
   };
 
   return (
@@ -155,7 +157,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     height: 200,
     alignItems: "center",
-    backgroundColor:'green'
+
 
   },
   body: {
@@ -164,7 +166,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "column",
     width: '100%',
-    backgroundColor:'red'
+
 
   },
   inputText: {
@@ -190,7 +192,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor:'yellow'
   },
   CreateA: {
     width: "85%",

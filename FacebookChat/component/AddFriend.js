@@ -94,16 +94,10 @@ const AddFriend = ({ item }) => {
   //----------------Hủy yêu cầu kết bạn
   const HuyYeuCauKetBan = async () => {
     try {
-      const query = firebase.firestore().collection('friendRequests')
+      const query = await firebase.firestore().collection('friendRequests')
         .where('idReceiver', '==', userCurrent.userID)
-        .where('userSend.userID', '==', item.item.userID);
+        .where('userSend.userID', '==', item.item.userID).get();
 
-      console.log(userCurrent.userID)
-      console.log(item.item.userID)
-
-
-      const querySnapshot = await query.get();
-      console.log("size: ", querySnapshot.size)
       querySnapshot.forEach((doc) => {
         // Xóa mỗi tài liệu riêng lẻ
         doc.ref.delete();

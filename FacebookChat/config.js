@@ -4,6 +4,7 @@ import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 import 'firebase/compat/storage'
 import 'firebase/compat/messaging';
+import 'firebase/compat/database';
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -14,7 +15,8 @@ const firebaseConfig = {
   storageBucket: "facebookchat-f8fb6.appspot.com",
   messagingSenderId: "29641992166",
   appId: "1:29641992166:web:0298e8a87992567caed827",
-  measurementId: "G-PZN96VHZ9S"
+  measurementId: "G-PZN96VHZ9S",
+  databaseURL: "https://facebookchat-f8fb6-default-rtdb.asia-southeast1.firebasedatabase.app",
 };
 
 // Initialize Firebase

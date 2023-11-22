@@ -14,7 +14,7 @@ import {
   KeyboardAvoidingView,
 } from "react-native";
 import Coment from "./Comment.js";
-import { React, useState, useContext, useEffect, memo } from "react";
+import { React, useState, useRef, useEffect, memo } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import { FontAwesome, EvilIcons, AntDesign } from "@expo/vector-icons";
 import Swiper from "react-native-swiper";
@@ -24,14 +24,12 @@ import ImageViewer from "react-native-image-zoom-viewer";
 import { firebase } from "../../config.js";
 import TimeAgo from "react-native-timeago";
 import color from "../../color/color.js";
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native'
-import { UserContext } from '../../UserContext';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 const FlatItem = memo((props) => {
   const navigation = useNavigation();
   const data = props.item;
-  const { userCurrent } = useContext(UserContext);
-  const [User, setUser] = useState(userCurrent);
+  const [User, setUser] = useState();
 
   const handleUser = async (id) => {
     const userRef = firebase.firestore().collection("users").doc(id);
@@ -44,6 +42,16 @@ const FlatItem = memo((props) => {
       return null;
     }
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const userData = await handleUser(data.userID);
+      if (userData) {
+        setUser(userData);
+      }
+    };
+    fetchData();
+  }, []);
 
   const [selectImage, setImageUpload] = useState(data.images);
   const [isLiked, setIsLiked] = useState(false);
@@ -101,7 +109,7 @@ const FlatItem = memo((props) => {
 
   const tym = async () => {};
   const DetaiHandress = () => {
-    navigation.navigate("SeeDetails");
+    navigation.navigate("SeeDetails",User);
   };
 
   const [isViewerOpen, setIsViewerOpen] = useState(false);
@@ -480,7 +488,8 @@ const styles = StyleSheet.create({
     backgroundColor: color.background,
     marginTop: 10,
     elevation:9,
-    paddingTop:10
+    paddingTop:10,
+    borderRadius:7
   },
   view1: {
     flexDirection: "row",

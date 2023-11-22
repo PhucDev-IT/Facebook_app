@@ -144,6 +144,7 @@ const styles = StyleSheet.create({
   },
   labelText: {
     fontSize: 23,
-    fontWeight: 'bold'
+    fontWeight: '600',
+    color:'#444444'
   },
 })

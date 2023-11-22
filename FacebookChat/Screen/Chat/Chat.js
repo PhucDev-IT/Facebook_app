@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, FlatList,RefreshControl } from 'react-native'
-import React, { useEffect,useContext } from 'react'
+import { StyleSheet, Text, View, FlatList, RefreshControl } from 'react-native'
+import React, { useEffect, useContext } from 'react'
 import CircleUser from '../../component/CircleUser'
 import { TouchableOpacity } from 'react-native'
 import { AntDesign } from '@expo/vector-icons';
@@ -30,17 +30,26 @@ const Chat = () => {
   //Lấy danh sách bạn bè
   useEffect(() => {
     const getFriendRequests = async () => {
-      const friends = firebase.firestore().collection('Friends').doc(userCurrent.userID).collection('userFriends')
-      const snapshot = await friends.get();
-
-      const requests = snapshot.docs.map((doc) => doc.data());
-      
-      setMyFriends(requests);
-   
+      try {
+        const users = [];
+        const friends = await firebase.firestore().collection('Friends').doc(userCurrent.userID).collection('userFriends').get();
+  
+        for (const docs of friends.docs) {
+          const doc = await firebase.firestore().collection('users').doc(docs.id).get();
+          if (doc.exists) {
+            users.push(doc.data());
+          }
+        }
+  
+        setMyFriends(users);
+      } catch (error) {
+        console.error('Lỗi khi lấy danh sách bạn bè:', error);
+      }
     };
-    
+  
     getFriendRequests();
   }, [userCurrent.userID]);
+ 
 
   //Lấy danh sách tin nhắn
   useEffect(() => {
@@ -51,21 +60,21 @@ const Chat = () => {
 
         query.onSnapshot(async (querySnapshot) => {
           let lastMess = [];
-        
+
           for (const doc of querySnapshot.docs) {
             const conversationRef = chatsRef.doc(doc.id).collection('conversation').orderBy('createdAt', 'desc').limit(1);
-        
+
             conversationRef.onSnapshot((querySnapshotRef) => {
               if (querySnapshotRef.size > 0) {
                 const docRef = querySnapshotRef.docs[0];
                 const data = docRef.data();
-                
+
                 // Xóa mục cũ khỏi mảng nếu tồn tại
                 const existingIndex = lastMess.findIndex(item => item.idRoom === doc.id);
                 if (existingIndex !== -1) {
                   lastMess.splice(existingIndex, 1);
                 }
-        
+
                 lastMess.push({
                   idRoom: doc.id,
                   lastMess: data.text,
@@ -80,13 +89,13 @@ const Chat = () => {
                     userID: data.sentBy.userID,
                   },
                 });
-        
+
                 setMessages(lastMess); // Đặt state sau khi lấy được dữ liệu
               }
             });
           }
         });
-        
+
       } catch (error) {
         console.log("Có lỗi khi lấy thông tin user chat: " + error);
       }
@@ -110,10 +119,10 @@ const Chat = () => {
           horizontal={true}
           data={myFriends}
           keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => <CircleUser item={item} userCurrent={userCurrent} />}
+          renderItem={({ item }) => <CircleUser item={item} />}
           refreshControl=
-          { <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-          >
+          {<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        >
         </FlatList>
       </View>
       <View style={styles.body}>
