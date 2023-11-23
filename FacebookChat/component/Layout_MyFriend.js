@@ -3,14 +3,12 @@ import React from 'react'
 import { Feather } from '@expo/vector-icons';
 const Layout_MyFriend = (item) => {
 
-  console.log(item.item.MyFriend.DisplayName)
-
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.container_btn}>
-        <Image style={styles.img} source={{ uri: item.item.MyFriend.avatar }} />
+        <Image style={styles.img} source={{ uri: item.item.avatar }} />
         <View style={styles.content}>
-          <Text style={styles.name}>{item.item.MyFriend.DisplayName}</Text>
+          <Text style={styles.name}>{item.item.DisplayName}</Text>
           <Text style={styles.address}>Việt Nam</Text>
         </View>
       </TouchableOpacity>

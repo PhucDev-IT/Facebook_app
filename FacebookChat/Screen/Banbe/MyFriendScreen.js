@@ -13,16 +13,25 @@ const MyFriendScreen = ({ navigation }) => {
     //Lấy danh sách bạn bè
     useEffect(() => {
         const getFriendRequests = async () => {
-            const friends = firebase.firestore().collection('Friends').doc(userCurrent.userID).collection('userFriends')
-
-            const snapshot = await friends.get();
-
-            const requests = snapshot.docs.map((doc) => doc.data());
-            setMyFriends(requests);
+          try {
+            const users = [];
+            const friends = await firebase.firestore().collection('Friends').doc(userCurrent.userID).collection('userFriends').get();
+      
+            for (const docs of friends.docs) {
+              const doc = await firebase.firestore().collection('users').doc(docs.id).get();
+              if (doc.exists) {
+                users.push(doc.data());
+              }
+            }
+      
+            setMyFriends(users);
+          } catch (error) {
+            console.error('Lỗi khi lấy danh sách bạn bè:', error);
+          }
         };
-
+      
         getFriendRequests();
-    }, [userCurrent.userID]);
+      }, [userCurrent.userID]);
 
 
     const handleBack = () => {

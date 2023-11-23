@@ -18,25 +18,18 @@ import { UserContext } from '../../UserContext';
 const Infor = ({ navigation }) => {
   const { userCurrent } = useContext(UserContext);
   const [user, setUser] = useState(userCurrent);
-
-  const [image, setImage] = useState(user.avatar);
-
-
-  //Đăng xuất
-  const logout = ()=>{
+  const [image, setImage] = useState(user.avatar)
+  const logout = () => {
+    console.log('hdhdhd')
     firebase.auth().signOut().then(() => {
-  
         firebase.database().ref('users/' + user.userID).set({
           isOnline:false
         });
-
-
-      navigation.navigate("SplashScreen")
+      navigation.navigate("Login")
     }).catch((error) => {
       // An error happened.
     });
   }
-
   useFocusEffect(
     useCallback(() => {
       const Selectuser = async () => {
@@ -75,7 +68,6 @@ const Infor = ({ navigation }) => {
   useEffect(() => {
     const getPosts = async () => {
       try {
-        console.log(user.userID);
         const postsRef = firebase.firestore().collection("posts"); // Thay 'posts' bằng tên collection của bạn
         const querySnapshot = await postsRef
           .where("userID", "==", user.userID)
@@ -101,6 +93,12 @@ const Infor = ({ navigation }) => {
   const InforHeader = () => {
     return (
       <View>
+        <View style={styles.navlog}>
+          <Text>{user.DisplayName}</Text>
+          <TouchableOpacity    onPress={logout}>
+               <Text>LogOut</Text>
+          </TouchableOpacity>
+        </View>
         <View style={styles.avatar}>
           <Image style={styles.imges} source={{ uri: image }}></Image>
         </View>
@@ -109,9 +107,11 @@ const Infor = ({ navigation }) => {
         </View>
         <View style={styles.view4}>
           <TouchableOpacity 
-          onPress={logout}
+             onPress={() => {
+              navigation.navigate("Story");
+            }}
           style={styles.btn1}>
-            <Text style={styles.txt1}>+ Đăng xuất</Text>
+            <Text style={styles.txt1}>+ Add Story</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
@@ -267,5 +267,9 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: 18,
       fontWeight:'500',
+  }, navlog: {
+    flexDirection: 'row'
+    , padding: 10,
+    justifyContent:'space-between',
   }
 });

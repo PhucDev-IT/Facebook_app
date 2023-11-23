@@ -243,8 +243,23 @@ const SeeDeTail = ({ route, navigation }) => {
         {SeeIF && (
           <View style={styles.thongtin}>
             <Text style={styles.txtx}>Ngày sinh: {dataRoute.BirthOfDate}</Text>
-            <Text style={styles.txtx}>Giới tính: {dataRoute.Gender == 1 ? "Nam" : "Nữ"}</Text>
-            <Text style={styles.txtx}>Email: {dataRoute.UserName}</Text>
+            <Text style={styles.txtx}>
+              Giới tính {dataRoute.Gender == 1 ? "Nam" : "Nữ"}
+            </Text>
+            <Text style={styles.txtx}>Email {dataRoute.UserName}</Text>
+            <Text style={styles.txtx}>
+              Địa chỉ: {dataRoute.address ? dataRoute.address : "Không có"}
+            </Text>
+            <Text style={styles.txtx}>
+              Trường học: {dataRoute.school ? dataRoute.school : "Không có"}
+            </Text>
+            <Text style={styles.txtx}>
+              Nghề nghiệp: {dataRoute.occupation ? dataRoute.occupation : "Không có"}
+            </Text>
+            <Text style={styles.txtx}>
+              Mối quan hệ:{" "}
+              {dataRoute.relationshipStatus ? dataRoute.relationshipStatus : "Không có"}
+            </Text>
           </View>
         )}
         <View

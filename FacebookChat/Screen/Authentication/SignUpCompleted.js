@@ -3,7 +3,7 @@ import React from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import color from '../../color/color';
 
-const SignUpCompleted = ({ navigation }) => {
+const SignUpCompleted = ({navigation}) => {
     const handleLogin = () => {
          navigation.navigate("Login")
     }

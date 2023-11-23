@@ -12,7 +12,7 @@ import * as Notifications from 'expo-notifications';
 export default function App() {
   const [initializeApp, setInitializeApp] = useState(true);
   const [user, setUser] = useState(null);
-  const [hidden, setHidden] = useState(false);
+
 
   //--------------THIẾT LẬP CẤP QUYỀN CHO ANDROID VÀ IOS -------------
   // const requestUserPermission = async () => {
@@ -91,9 +91,8 @@ export default function App() {
     <SafeAreaView style={{ flex: 1 }}>
       <StatusBar
         animated={true}
-        backgroundColor="#ffffff"
-        barStyle="dark-content"
-        hidden={hidden}
+        backgroundColor="black"
+        barStyle="#ffffff"
       />
       <UserProvider>
         {user ? <Navigate_Screen screen={"BottomTabNavigate"} /> : <Navigate_Screen screen={"Login"} />}

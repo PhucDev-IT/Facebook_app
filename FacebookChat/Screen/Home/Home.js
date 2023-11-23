@@ -45,7 +45,7 @@ const Home = ({ navigation }) => {
   const handlerAdd_articles = () => {
     navigation.navigate("Add_articles", user);
   };
-
+  
   //-------------------LẤY BÀI VIẾT ------------------------------
 
   const [refreshing, setRefreshing] = useState(false);
@@ -80,7 +80,7 @@ const Home = ({ navigation }) => {
   useEffect(() => {
     const getPosts = async () => {
       try {
-        const postsRef = firebase.firestore().collection("posts"); // Thay 'posts' bằng tên collection của bạn
+        const postsRef = firebase.firestore().collection("posts"); 
         const querySnapshot = await postsRef.get();
 
         const posts = [];
@@ -122,7 +122,6 @@ const Home = ({ navigation }) => {
       return [];
     }
   }
-  
   const getStoriesMyFriends = async () => {
     try {
       let listStory = [];

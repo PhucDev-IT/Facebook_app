@@ -8,9 +8,21 @@ import * as ImagePicker from 'expo-image-picker';
 import * as VideoThumbnails from 'expo-video-thumbnails';
 import { TouchableOpacity } from 'react-native';
 import { UserContext } from '../../UserContext';
+import { useRef } from 'react';
 const Story = ({ navigation, route }) => {
   const [stories, setStories] = useState([]);
   const { userCurrent } = useContext(UserContext);
+  const flatListRef = useRef(null);
+
+  const handleVideoEnd = (currentVideo) => {
+    if (currentVideo < data.length - 1) {
+      // Chuyển sang video tiếp theo nếu còn video trong danh sách
+      setCurrentVideoIndex(currentVideo + 1);
+      flatListRef.current.scrollToIndex({ index: currentVideo + 1 });
+    }
+  };
+
+
 
   const now = new Date();
   //.where('endTime', '>', now)
@@ -125,7 +137,7 @@ const Story = ({ navigation, route }) => {
           numColumns={2}
           keyExtractor={(item, index) => index.toString()} // Assuming each document has a unique "id" field
           renderItem={({ item, index }) => {
-            return <Story_Item item={item} />;
+            return <Story_Item item={item} currentVideoIndex={index} onAccept={(index) => handleVideoEnd(index)}/>;
           }}
         />
 

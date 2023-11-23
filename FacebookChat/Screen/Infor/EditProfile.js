@@ -36,11 +36,11 @@ const EditProfile = ({ navigation }) => {
   let user = userCurrent;
 
   const [selectedImages, setSelectedImages] = useState(user.avatar);
-  const [displayName, setDisplayName] = useState("");
-  const [address, setAddress] = useState("");
-  const [school, setSchool] = useState("");
-  const [occupation, setOccupation] = useState("");
-  const [relationship, setRelationship] = useState("");
+  const [displayName, setDisplayName] = useState(user.DisplayName);
+  const [address, setAddress] = useState(user.address);
+  const [school, setSchool] = useState(user.school);
+  const [occupation, setOccupation] = useState(user.occupation);
+  const [relationship, setRelationship] = useState(user.relationship);
   const pickImages = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       allowsMultipleSelection: false,
@@ -73,14 +73,14 @@ const EditProfile = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+     <ScrollView style={styles.container}>
       <View style={styles.backbr}>
         <TouchableOpacity
           onPress={() => navigation.navigate("Infor")}
           style={{ flexDirection: "row", alignItems: "center" }}
         >
-          <Ionicons name="arrow-back" size={26} color="white" />
-          <Text style={{ color: "white" }}> Edit Profile</Text>
+          <Ionicons name="arrow-back" size={26} color="black" />
+          <Text style={{ color: "black" }}> Edit Profile</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
@@ -95,7 +95,7 @@ const EditProfile = ({ navigation }) => {
       <View style={styles.imguser}>
         <Image style={styles.imges} source={{ uri: selectedImages }}></Image>
         <TouchableOpacity onPress={pickImages} style={styles.btnEdit}>
-          <Text style={{ fontSize: 20, fontWeight: "600", color: "white" }}>
+          <Text style={{ fontSize: 20, fontWeight: "600", color: "black" }}>
             Edit
           </Text>
         </TouchableOpacity>
@@ -110,11 +110,11 @@ const EditProfile = ({ navigation }) => {
         <Text style={styles.txt}>Email: {user.UserName}</Text>
       </View>
       <View style={styles.thanhngang}></View>
-      <ScrollView>
+     
         <TextInput
           placeholder="Tên hiển thị"
           style={styles.txt1}
-          placeholderTextColor="white"
+          placeholderTextColor="black"
           multiline
           underlineColorAndroid="transparent"
           value={displayName}
@@ -123,7 +123,7 @@ const EditProfile = ({ navigation }) => {
         <TextInput
           placeholder="Địa chỉ"
           style={styles.txt1}
-          placeholderTextColor="white"
+          placeholderTextColor="black"
           multiline
           underlineColorAndroid="transparent"
           value={address}
@@ -132,7 +132,7 @@ const EditProfile = ({ navigation }) => {
         <TextInput
           placeholder="Trường học"
           style={styles.txt1}
-          placeholderTextColor="white"
+          placeholderTextColor="black"
           multiline
           underlineColorAndroid="transparent"
           value={school}
@@ -141,7 +141,7 @@ const EditProfile = ({ navigation }) => {
         <TextInput
           placeholder="Công việc"
           style={styles.txt1}
-          placeholderTextColor="white"
+          placeholderTextColor="black"
           multiline
           underlineColorAndroid="transparent"
           value={occupation}
@@ -150,21 +150,21 @@ const EditProfile = ({ navigation }) => {
         <TextInput
           placeholder="Hôn nhân"
           style={styles.txt1}
-          placeholderTextColor="white"
+          placeholderTextColor="black"
           multiline
           underlineColorAndroid="transparent"
           value={relationship}
           onChangeText={(text) => setRelationship(text)}
         />
       </ScrollView>
-    </View>
+   
   );
 };
 export default EditProfile;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#808080",
+    backgroundColor: "white",
   },
   backbr: {
     width: "100%",
@@ -210,13 +210,13 @@ const styles = StyleSheet.create({
   },
   txt: {
     fontSize: 20,
-    color: "white",
+    color: "black",
     fontWeight: "300",
   },
   thanhngang: {
     width: "100%",
     height: 4,
-    backgroundColor: "white",
+    backgroundColor: "black",
     marginVertical: 10,
   },
   txtx: {
@@ -226,9 +226,9 @@ const styles = StyleSheet.create({
     width: "95%",
     height: 45,
     borderRadius: 10,
-    backgroundColor: "#666666",
+    backgroundColor: "#D3D3D3",
     padding: 4,
-    color: "white",
+    color: "black",
     marginHorizontal: 10,
     marginTop: 10,
   },

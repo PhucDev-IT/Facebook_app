@@ -75,7 +75,7 @@ const Add_articles = ({ navigation }) => {
       aspect: [4, 3],
       quality: 1,
     });
-    console.log("Link ảnh lấy ra: ", result);
+  
     if (!result.canceled) {
       setSelectedImages(
         result.assets.map((asset) => {
@@ -111,7 +111,6 @@ const Add_articles = ({ navigation }) => {
   };
   // set lai khi xoa di 1 cai anh
   const XoaAnh = (image, index) => {
-    console.log('hdhuhfujdfdhsbf')
     console.log(image, index);
     const newImages = [...selectedImages];
     newImages.splice(index, 1);
@@ -156,9 +155,7 @@ const Add_articles = ({ navigation }) => {
     setSelectedOption(option);
   };
   useEffect(() => {}, [selectedOption]);
-  // tương tác với ảnh sau khi đưuocj chupk
   const [capturedImage, setCapturedImage] = useState(null);
-
   const __takePicture = async () => {
     if (!cameraRef.current) return;
     const photo = await cameraRef.current.takePictureAsync();
@@ -166,14 +163,13 @@ const Add_articles = ({ navigation }) => {
     setIsView(false);
     setStartCamera(false);
   };
-  // cho phép đổi canm
   const [type, setType] = useState(CameraType.front);
   const toggleCameraType = () => {
     setType((current) =>
       current === CameraType.back ? CameraType.front : CameraType.back
     );
   };
-  // khi bạn bấm với nut save
+ 
   const SaveImage = () => {
     setView(3);
     setHienthi(true);
@@ -243,11 +239,8 @@ const Add_articles = ({ navigation }) => {
       );
       const uid = user.userID;
       let datetime = new Date();
-
       let datePostTimstemp = await datetime.toISOString().slice(0, -5);
 
-      console.log(uid + "uususTime" + datePostTimstemp);
-      // Sau đó, bạn có thể thêm dữ liệu vào collection "itemPosts"
       firebase
         .firestore()
         .collection("posts")
@@ -281,8 +274,8 @@ const Add_articles = ({ navigation }) => {
               onPress={() => backTrangchu()}
               style={{ flexDirection: "row" }}
             >
-              <Ionicons name="arrow-back" size={26} color="white" />
-              <Text style={{ color: "white" }}> Create Post</Text>
+              <Ionicons name="arrow-back" size={26} color="black" />
+              <Text style={{ color: "black" }}>Back</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={handleUplaodPost}
@@ -295,7 +288,7 @@ const Add_articles = ({ navigation }) => {
                 alignItems: "center",
               }}
             >
-              <Text style={{ color: "white" }}>POST</Text>
+              <Text style={{ color: "white",fontWeight:'700'}}>POST</Text>
               <Spinner
                 visible={loading}
                 textContent={"Đang tải..."}
@@ -325,7 +318,7 @@ const Add_articles = ({ navigation }) => {
                     return item.title;
                   }}
                   buttonTextStyle={{
-                    color: "white",
+                    color: "black",
                   }}
                   renderDropdownIcon={(isOpened) => {
                     return (
@@ -339,16 +332,16 @@ const Add_articles = ({ navigation }) => {
                   dropdownIconPosition={"left"}
                   dropdownStyle={styles.dropdown4DropdownStyle}
                   rowStyle={{
-                    backgroundColor: "#333333",
+                    backgroundColor: "#0066FF",
                   }}
                   rowTextStyle={{
-                    color: "white",
+                    color: "black",
                     fontWeight: "800",
                   }}
                 />
                 <TouchableOpacity style={styles.touch2}>
                   <Entypo name="add-to-list" size={24} color="black" />
-                  <Text style={{ color: "white" }}> Album</Text>
+                  <Text style={{ color: "black" }}> Album</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -359,14 +352,14 @@ const Add_articles = ({ navigation }) => {
                 <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                   <TextInput
                     placeholder="What on your mind ?"
-                    placeholderTextColor={"white"}
+                    placeholderTextColor={"black"}
                     style={styles.tip1}
                     multiline
                     onChangeText={onchangerTexT}
                     underlineColorAndroid="transparent"
                     value={isText}
                   ></TextInput>
-                  <Text style={{ color: "white", fontSize: 16 }}> {feel}</Text>
+                  <Text style={{ color: "black", fontSize: 16 }}> {feel}</Text>
                 </ScrollView>
               </View>
             )}
@@ -375,13 +368,13 @@ const Add_articles = ({ navigation }) => {
                 <ScrollView>
                   <TextInput
                     placeholder="What you think ?"
-                    placeholderTextColor={"white"}
+                    placeholderTextColor={"black"}
                     style={styles.tip2}
                     multiline
                     value={isText}
                     onChangeText={onchangerTexT}
                   ></TextInput>
-                  <Text style={{ color: "white", fontSize: 16 }}>{feel}</Text>
+                  <Text style={{ color: "black", fontSize: 16 }}>{feel}</Text>
                   <Swiper
                     style={{
                       height: "95%",
@@ -417,13 +410,13 @@ const Add_articles = ({ navigation }) => {
               <View style={styles.view12}>
                 <TextInput
                   placeholder="What you think ?"
-                  placeholderTextColor={"white"}
+                  placeholderTextColor={"black"}
                   style={styles.tip3}
                   multiline
                   value={isText}
                   onChangeText={onchangerTexT}
                 ></TextInput>
-                <Text style={{ color: "white", fontSize: 16 }}>{feel}</Text>
+                <Text style={{ color: "black", fontSize: 16 }}>{feel}</Text>
                 <View style={styles.view14}>
                   <Image
                     source={{ uri: capturedImage.uri }}
@@ -471,8 +464,8 @@ const Add_articles = ({ navigation }) => {
                 onPress={HandeHienthi}
                 style={{ flexDirection: "row" }}
               >
-                <Ionicons name="arrow-back" size={26} color="white" />
-                <Text style={{ color: "white" }}> Back</Text>
+                <Ionicons name="arrow-back" size={26} color="black" />
+                <Text style={{ color: "black" }}> Back</Text>
               </TouchableOpacity>
             )}
             {!isView && (
@@ -480,7 +473,7 @@ const Add_articles = ({ navigation }) => {
                 onPress={__retakePicture}
                 style={{ flexDirection: "row" }}
               >
-                <Text style={{ color: "white" }}> Back</Text>
+                <Text style={{ color: "black" }}> Back</Text>
               </TouchableOpacity>
             )}
             {!isView && (
@@ -488,7 +481,7 @@ const Add_articles = ({ navigation }) => {
                 onPress={SaveImage}
                 style={{ flexDirection: "row" }}
               >
-                <Text style={{ color: "white" }}> Save</Text>
+                <Text style={{ color: "black" }}> Save</Text>
               </TouchableOpacity>
             )}
           </View>
@@ -538,7 +531,7 @@ const Add_articles = ({ navigation }) => {
                     <Text
                       style={{
                         fontSize: 18,
-                        color: "white",
+                        color: "black",
                         opacity: selectedOption === "64mp" ? 1 : 0.5,
                         fontWeight:
                           selectedOption === "64mp" ? "bold" : "normal",
@@ -577,20 +570,20 @@ const Add_articles = ({ navigation }) => {
       )}
       <BottomSheet visible={visible} onBackdropPress={bootomShetShare}>
         {/*Bottom Sheet inner View*/}
-        <View style={{ flex: 0.6, backgroundColor: "white" }}>
+        <View style={{ flex: 0.6,backgroundColor:'white'}}>
           <Text style={styles.txt7}>Cảm xúc</Text>
           <ScrollView
             contentContainerStyle={{ flexGrow: 1 }}
-            style={{ backgroundColor: "red" }}
+            
           >
             <TouchableOpacity
               onPress={() => {
-                setFell(" -Đang cảm thấy vui vẻ");
+                setFell(" -Đang cảm thấy một mình😁😁");
                 setVisible(!visible);
               }}
               style={styles.touch6}
             >
-              <Text>Đang cảm thấy vui vẻ</Text>
+              <Text>Đang cảm thấy một minh 😒😒</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -671,10 +664,11 @@ const Add_articles = ({ navigation }) => {
     </View>
   );
 };
+
 export default Add_articles;
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#222222",
+    backgroundColor: "#BEBEBE",
     width: "100%",
     height: 50,
     justifyContent: "space-between",
@@ -683,7 +677,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   view1: {
-    backgroundColor: "#333333",
+    backgroundColor: "#BEBEBE",
     width: "100%",
     height: 90,
     alignItems: "center",
@@ -694,7 +688,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 80,
-    backgroundColor: "#999999",
+    backgroundColor: "white",
   },
   img1: {
     width: 80,
@@ -708,11 +702,11 @@ const styles = StyleSheet.create({
   },
   txt1: {
     fontSize: 30,
-    color: "white",
+    color: "black",
     fontWeight: "600",
   },
   view4: {
-    color: "white",
+    color: "black",
     fontSize: 17,
   },
   view5: {
@@ -730,14 +724,14 @@ const styles = StyleSheet.create({
     height: 40,
     borderBottomColor: "#339900",
     borderRadius: 12,
-    backgroundColor: "#3366CC",
+    backgroundColor: "#0066FF",
   },
   touch2: {
     width: 120,
     height: 40,
     borderBottomColor: "#FF3300",
     borderRadius: 12,
-    backgroundColor: "#3366CC",
+    backgroundColor: "#0066FF",
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "row",
@@ -747,20 +741,20 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   view8: {
-    backgroundColor: "#444444",
+    backgroundColor: "#D3D3D3",
     width: "100%",
     height: 600,
     padding: 10,
   },
-  tip1: { color: "white", fontSize: 18 },
+  tip1: { color: "black", fontSize: 18 },
   view9: {
-    backgroundColor: "#444444",
+    backgroundColor: "white",
     width: "100%",
     height: "74%",
     paddingTop: 10,
   },
   tip2: {
-    color: "white",
+    color: "black",
     fontSize: 18,
     marginBottom: 10,
   },
@@ -782,7 +776,7 @@ const styles = StyleSheet.create({
   txt2: {
     fontSize: 30,
     fontWeight: "300",
-    color: "white",
+    color: "black",
   },
   view11: {
     flex: 1,
@@ -791,14 +785,14 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   view12: {
-    backgroundColor: "#C0C0C0",
+    backgroundColor: "#D3D3D3",
     width: "100%",
     height: 600,
     paddingTop: 10,
   },
   img3: { width: "100%", height: "100%" },
   tip3: {
-    color: "white",
+    color: "black",
     fontSize: 18,
     marginBottom: 10,
   },

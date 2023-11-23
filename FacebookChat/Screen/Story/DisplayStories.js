@@ -13,8 +13,9 @@ import { useState } from 'react';
 import { FontAwesome } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
 import { TextInput } from 'react-native-paper';
+import { StatusBar } from 'expo-status-bar';
 const DisplayStories = ({ route }) => {
-    const { item } = route.params;
+    const { item,onAccept,currentVideoIndex } = route.params;
     const { userCurrent } = useContext(UserContext);
     const [numberView, setNumberView] = useState(0);
     const [viewers, setViewers] = useState([]);
@@ -46,17 +47,41 @@ const DisplayStories = ({ route }) => {
                 </TouchableOpacity>
             </View>
         )
-    }
+    };
 
-
+    const inforRoom = async () => {
+        //Lấy tất cả tin nhắn của người dùng hiện tại, sau đó lọc xem có tin nhắn nào đã được tạo với user kia chưa
+        const queryRoom = await firebase.firestore().collection('chats')
+          .where('user', 'array-contains', userCurrent.userID)
+          .get();
+        let roomId = null;
+        queryRoom.forEach((doc) => {
+          const data = doc.data();
+          for (const item of data.user) {
+            if (item === item.poster.id) {
+              roomId = doc.id;
+            }
+          }
+        })
+        if (roomId == null) {
+          roomId = item.poster.id > userCurrent.userID ? `${item.poster.id + '-' + userCurrent.userID}` : `${userCurrent.userID + '-' + item.poster.id}`;
+        }
+    
+        return roomId;
+      };
 
     const showViewFriends = () => {
         return (
             <View style={{ flexDirection: 'row', }}>
 
-                <View style={styles.inputForm}>
+                <TouchableOpacity 
+                 onPress={async () => {
+                    const roomId = await inforRoom();
+                    navigation.navigate("ChatDetails", { roomId: roomId, FriendChat: item.poster });
+                  }}
+                style={styles.inputForm}>
                     <Text style={{ color: color.white, fontWeight: '400' }}>Gửi tin nhắn</Text>
-                </View>
+                </TouchableOpacity>
                 <ScrollView horizontal={true}>
                     <TouchableOpacity onPress={() => giveIcon('♥️')}><Text style={styles.icon}>♥️</Text></TouchableOpacity>
                     <TouchableOpacity onPress={() => giveIcon('😆')}><Text style={styles.icon}>😆</Text></TouchableOpacity>
@@ -159,7 +184,6 @@ const DisplayStories = ({ route }) => {
 
     return (
         <View style={styles.container}>
-
             <Video
                 source={{ uri: item.data.story }}
                 rate={1.0}

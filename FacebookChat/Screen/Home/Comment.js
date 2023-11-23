@@ -109,21 +109,20 @@ const Coment = (props) => {
     try {
       props.changercmt(true);
       setShowOptions(false);
-  
+      console.log(Data)
+      console.log(props.quantityComment+'so luong cmu')
       const DeleteCmt = firebase.firestore().collection("CommentPost");
       await DeleteCmt.doc(Item.idComent).delete();
-      const quantityComment = props.quantityComment - 1; // Giảm số lượng bình luận
-  
-      // Cập nhật số lượng bình luận giảm trong collection "posts"
+      const quantityComment = props.quantityComment -1; // Giảm số lượng bình luận
+      console.log(quantityComment + 'so luong cmt')
+      props.setquantityComment(quantityComment);
       const postRef = firebase.firestore().collection("posts").doc(Item.idBaiviet);
       await postRef.update({ quantityComment });
-  
-      console.log("Bình luận đã được xóa thành công!");
       props.changercmt(true);
     } catch (error) {
-      console.error("Lỗi khi xóa bình luận:", error);
+      return;
     }
-  };;
+  };
   return (
     <View>
       <View style={styles.view1}>

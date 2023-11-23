@@ -14,7 +14,7 @@ import {
   KeyboardAvoidingView,
 } from "react-native";
 import Coment from "./Comment.js";
-import { React, useState, useRef, useEffect, memo } from "react";
+import React, { useEffect, useState, useContext,memo} from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import { FontAwesome, EvilIcons, AntDesign } from "@expo/vector-icons";
 import Swiper from "react-native-swiper";
@@ -24,13 +24,14 @@ import ImageViewer from "react-native-image-zoom-viewer";
 import { firebase } from "../../config.js";
 import TimeAgo from "react-native-timeago";
 import color from "../../color/color.js";
+import { UserContext } from '../../UserContext.js';
 import { useNavigation } from '@react-navigation/native'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 const FlatItem = memo((props) => {
   const navigation = useNavigation();
   const data = props.item;
   const [User, setUser] = useState();
-
+  const { userCurrent } = useContext(UserContext);
   const handleUser = async (id) => {
     const userRef = firebase.firestore().collection("users").doc(id);
     const userDoc = await userRef.get();
@@ -93,10 +94,9 @@ const FlatItem = memo((props) => {
       } else if (!existingLike) {
         const newUserLike = {
           userID: props.userDn,
-          trangthai: Liked, // Trạng thái mặc định khi thêm mới
+          trangthai: Liked, 
         };
         postData.ArrUserlike.push(newUserLike);
-        // Sau khi thêm mới, cập nhật lại mảng ArrUserlike trong postData.
         await postRef.update({
           ArrUserlike: postData.ArrUserlike,
           quantityLike: soluongTim,
@@ -109,9 +109,11 @@ const FlatItem = memo((props) => {
 
   const tym = async () => {};
   const DetaiHandress = () => {
+    if (User.userID === userCurrent.userID) {
+      navigation.navigate("Infor");
+    }
     navigation.navigate("SeeDetails",User);
   };
-
   const [isViewerOpen, setIsViewerOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showImage, setImage] = useState(false);
@@ -119,7 +121,7 @@ const FlatItem = memo((props) => {
   useEffect(() => {
     const renderImgae = () => {
       data.ArrUserlike.forEach((item) => {
-        if (item.userID == props.userDn) {
+        if (item.userID ===userCurrent.userID) {
           setIsLiked(item.trangthai);
           setUserLike(true);
         }
@@ -145,7 +147,7 @@ const FlatItem = memo((props) => {
       });
       if (result.action === Share.sharedAction) {
         if (result.activityType) {
-          // shared with activity type of result.activityType
+          
         } else {
           // shared
         }
@@ -181,7 +183,9 @@ const FlatItem = memo((props) => {
   const handleTextInputChange = (text) => {
     setNoiDung(text);
   };
-
+  const setquatyCmt = (soluongCmt) => {
+     setSoluongcmt(soluongCmt)
+   }
   const selectCommet = async () => {
     try {
       const commentQuery = await firebase
@@ -190,7 +194,6 @@ const FlatItem = memo((props) => {
         .where("idBaiviet", "==", data.id)
         .get();
       if (commentQuery) {
-        // Xử lý dữ liệu ở đây
         const comments = [];
         commentQuery.forEach((doc) => {
           const commentData = doc.data();
@@ -203,10 +206,6 @@ const FlatItem = memo((props) => {
       console.error("Lỗi khi lấy danh sách bình luận: ", error);
     }
   };
-  // useEffect(() => {
-  //   selectCommet();
-  // }, []);
-
   const SendComment = async () => {
     let soluong = soluongCmt + 1;
     setSoluongcmt(soluong);
@@ -217,7 +216,6 @@ const FlatItem = memo((props) => {
     }
     let noidung = Noidung;
     setNoiDung("");
-
     await firebase.firestore().collection("Comments").where;
     try {
       if (postRef) {
@@ -266,7 +264,6 @@ const FlatItem = memo((props) => {
   };
   const [changecmt, setChangeCmt] = useState(false);
   useEffect(() => {
-    console.log('gshshhs')
     selectCommet(changecmt);
     setChangeCmt(false);
     selectCommet();
@@ -417,7 +414,7 @@ const FlatItem = memo((props) => {
               </View>
               <View style={{ flex: 1 }}>
                 <FlatList
-                  style={{ flex: 0.9, backgroundColor: "#555555" }}
+                  style={{ flex: 0.9, backgroundColor:color.background }}
                   data={binhluan}
                   renderItem={({ item, index }) => {
                     return (
@@ -430,7 +427,7 @@ const FlatItem = memo((props) => {
                         idbaiviet={data._id}
                         setParentId={setParentId}
                         quantityComment={soluongCmt}
-                        setquantityComment={setSoluongcmt}
+                        setquantityComment={setquatyCmt}
                         changercmt={setChangeCmt}
                       />
                     );
@@ -438,16 +435,17 @@ const FlatItem = memo((props) => {
                 />
               </View>
               <View style={styles.view7}>
+                <Text style={{justifyContent:'flex-start'}}>Quy tắc</Text>
                 <TextInput
-                  placeholder="Comment "
+                  placeholder="Viết bình luận ... "
                   style={styles.txt1}
-                  placeholderTextColor={"white"}
+                  // placeholderTextColor={"white"}
                   multiline
                   onChangeText={handleTextInputChange}
                   underlineColorAndroid="transparent"
                   value={Noidung}
+                  
                 ></TextInput>
-
                 <View style={styles.view3}>
                   <View style={styles.view3_3}>
                     <TouchableOpacity>
@@ -485,7 +483,7 @@ export default FlatItem;
 const styles = StyleSheet.create({
   contain: {
     flex: 1,
-    backgroundColor: color.background,
+    backgroundColor:"white",
     marginTop: 10,
     elevation:9,
     paddingTop:10,
@@ -520,12 +518,12 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 45,
     borderRadius: 10,
-    backgroundColor: "#666666",
-    padding: 4,
-    color: "white",
+    backgroundColor: "#EEEEEE",
+    padding: 6,
+    color: "black",
   },
   view4: {
-    backgroundColor: "orange",
+    backgroundColor: "#EEEEEE",
     width: "100%",
     height: 40,
     paddingHorizontal: 16,
@@ -535,7 +533,7 @@ const styles = StyleSheet.create({
   },
   view6: {
     flex: 1,
-    backgroundColor: "#C0C0C0",
+    backgroundColor: "white",
     justifyContent: "flex-end",
   },
   touch2: {
@@ -548,9 +546,9 @@ const styles = StyleSheet.create({
   },
   view7: {
     width: "100%",
-    height: 100, // Đổi chiều cao của header
-    padding: 10,
+    height: 100, 
     justifyContent: "space-between",
+    paddingHorizontal:4,
   },
   touch3: {
     backgroundColor: "black",

@@ -21,6 +21,7 @@ const PreviewStory = ({ route }) => {
     }
 
     const handleUploadVideo = async () => {
+        alert('Video đang được tải lên');
         pushSotry();
         navigation.goBack();
     };
@@ -74,8 +75,6 @@ const PreviewStory = ({ route }) => {
                     thumbnail: urlThumbnail,
                     story: urlStory
                 })
-            alert('Thêm thành công');
-            navigation.goBack();
         } catch (error) {
             console.log('Có lỗi khi upload story: ', error)
         }

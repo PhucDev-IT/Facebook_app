@@ -6,47 +6,23 @@ import {
   TextInput,
   BackHandler,
   KeyboardAvoidingView,
-  ScrollView
+  ScrollView,
 } from "react-native";
 import { React, useState, useContext } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { firebase } from "../../config.js";
-import Loading_Animation from "../../component/Loading_Animation.js";
-
-import { UserContext } from '../../UserContext.js';
+import Spinner from "react-native-loading-spinner-overlay";
+import { UserContext } from "../../UserContext.js";
 import { useEffect } from "react";
 import color from "../../color/color.js";
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scrollview'
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scrollview";
 const Login = ({ navigation }) => {
-
   const [isLoading, setIsLoading] = useState(false);
   const { setUserCurrent } = useContext(UserContext);
-  const [showPassword, setShowPassword] = useState(false);
-  const [user,setUser] = useState();
   handlerCreate = () => {
     navigation.navigate("Infor_SignUp");
   };
-
-
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-
-
-  //Chặn quay về màn hình trước đó
-  useEffect(() => {
-    const handleBackButton = () => true;
-    BackHandler.addEventListener("hardwareBackPress", handleBackButton);
-    return () => {
-      BackHandler.removeEventListener(
-        "hardwareBackPress",
-        handleBackButton
-      );
-    };
-  }, []);
-  //--------------------------------------------------
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -56,81 +32,104 @@ const Login = ({ navigation }) => {
 
       const userCredential = await firebase
         .auth()
-        .signInWithEmailAndPassword('a@gmail.com', '123456');
+        .signInWithEmailAndPassword(email, password);
 
       const userID = userCredential.user.uid;
-      // Đăng nhập thành công, user chứa thông tin người dùng đã đăng nhập
-      const userDocRef = await firebase.firestore().collection("users").doc(userID);
-      userDocRef.get().then((doc) => {
-        if (doc.exists) {
-          // Dữ liệu người dùng được tìm thấy
-          const userData = doc.data();
-          setIsLoading(false)
-           setUserCurrent(userData);
-          navigation.navigate("BottomTabNavigate");
-        } else {
-          // Người dùng không tồn tại trong Firestore
-          alert("Người dùng không tồn tại");
-        }
-      })
+
+      const userDocRef = await firebase
+        .firestore()
+        .collection("users")
+        .doc(userID);
+      userDocRef
+        .get()
+        .then((doc) => {
+          if (doc.exists) {
+            const userData = doc.data();
+            setIsLoading(false);
+            setUserCurrent(userData);
+           
+            navigation.navigate("BottomTabNavigate",);
+          } else {
+            // Người dùng không tồn tại trong Firestore
+            alert("Người dùng không tồn tại");
+          }
+        })
         .catch((error) => {
-          setIsLoading(false)
+          setIsLoading(false);
+          return;
           console.error("Lỗi khi truy vấn dữ liệu người dùng:", error);
         });
-
     } catch (error) {
-      setIsLoading(false)
-      alert("Tài khoản hoặc mật khẩu không chính xác")
-      console.error("Lỗi khi đăng nhập:", error);
-      throw error; // Xử lý lỗi hoặc trả về lỗi
+      setIsLoading(false);
+      alert("Tài khoản hoặc mật khẩu không chính xác");
+      return;
+      throw error;
     }
-
-    
   };
-
+  const [hienthi, setHienthi] = useState(true);
+  const [eye, setEys] = useState(false);
+  const anhien = () => {
+    setHienthi(!hienthi);
+  };
   return (
-    <View  style={styles.container}>
-      <View style={styles.header}>
+    <View style={styles.container}>
+      <View style={styles.Body}>
         <FontAwesome5 name="facebook" size={74} color="blue" />
       </View>
-      <View style={styles.body}>
+      <View style={styles.Nhap}>
         <TextInput
-          label="Email"
+          onChangeText={(email) => {
+            setEmail(email);
+          }}
           value={email}
-          mode='outlined'
-          placeholder="Email"
-          onChangeText={text => setEmail(text)}
-          style={styles.inputText}
-        />
+          placeholderTextColor={"#BBBBBB"}
+          placeholder="Nhập email"
+          style={styles.txtName}
+        ></TextInput>
 
-        <View style={styles.inputContainer}>
+        <View style={[styles.txtName, styles.txtview]}>
           <TextInput
-            style={styles.inputText}
-            placeholder="Password"
-            secureTextEntry={!showPassword}
             value={password}
-            onChangeText={(text) => setPassword(text)}
-          />
-          <TouchableOpacity onPress={togglePasswordVisibility} style={styles.iconContainer}>
-            <Ionicons name={showPassword ? 'eye-off' : 'eye'} size={24} color="black" />
-          </TouchableOpacity>
+            onChangeText={(password) => {
+              setPassword(password);
+              if (password != "") {
+                setEys(true);
+              } else {
+                setEys(false);
+              }
+            }}
+            secureTextEntry={hienthi}
+            placeholderTextColor={"#BBBBBB"}
+            placeholder="Password"
+            style={{ width: "85%" }}
+          ></TextInput>
+          {eye == true && (
+            <TouchableOpacity onPress={anhien}>
+              <Ionicons
+                name={hienthi ? "eye-off" : "eye"}
+                size={30}
+                color="black"
+                style={styles.eye}
+              />
+            </TouchableOpacity>
+          )}
         </View>
-
-
         <TouchableOpacity
           onPress={() => DangNhap(email.trim(), password.trim())}
-          style={styles.btnLogin}
+          style={styles.button}
         >
-          <Text style={{ color: "white", fontSize: 18, fontWeight: 'bold' }}>Đăng Nhập</Text>
+          <Text style={{ color: "white", fontSize: 20 }}>Đăng Nhập</Text>
         </TouchableOpacity>
-        <TouchableOpacity>
-          <Text style={{ fontSize: 16, marginTop: 15, color: '#333333' }}>Bạn quên mật khẩu ư?</Text>
+        <TouchableOpacity onPress={() => {
+          
+          navigation.navigate("ForgotPass")
+        }}>
+          <Text style={{ fontSize: 17 }}>Bạn quên mật khẩu ư?</Text>
         </TouchableOpacity>
       </View>
-
       <View style={styles.botm}>
         <TouchableOpacity onPress={handlerCreate} style={styles.CreateA}>
-          <Text style={{ color: "#0066FF", fontSize: 18, }}>
+          <Text style={{ color: "#0066FF", fontSize: 18 }}>
             Tạo Tài Khoản Mới
           </Text>
         </TouchableOpacity>
@@ -138,58 +137,57 @@ const Login = ({ navigation }) => {
           FaceBook_Chat
         </Text>
       </View>
-      {isLoading ? <Loading_Animation /> : null}
-    </View >
+      <Spinner
+        visible={isLoading}
+        textContent={"Đang tải..."}
+        textStyle={{ color: "#FFF" }}
+      />
+    </View>
   );
 };
 export default Login;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: color.background,
+    backgroundColor: "#CCCCCC",
   },
   topBack: {
     marginTop: 10,
     marginLeft: 20,
   },
-  header: {
-    flex:1,
+  Body: {
     justifyContent: "center",
+    width: "100%",
     height: 200,
     alignItems: "center",
-
-
   },
-  body: {
-    flex:1,
+  Nhap: {
     justifyContent: "space-around",
     alignItems: "center",
     flexDirection: "column",
-    width: '100%',
-
-
+    width: "100%",
+    height: 300,
   },
-  inputText: {
-    width: '80%',
-    height: 55,
-    backgroundColor: color.white,
-    elevation: 6,
-    borderRadius: 10,
-    paddingHorizontal: 15,
+  txtName: {
+    width: "85%",
+    height: 70,
     borderWidth: 1,
-    borderColor: '#CCCCCC'
+    borderRadius: 10,
+    borderColor: "white",
+    backgroundColor: "white",
+    paddingHorizontal: 15,
   },
-  btnLogin: {
-    width: "80%",
-    height: 50,
+  button: {
+    width: "84%",
+    height: 60,
     backgroundColor: "#0033FF",
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 30,
-    marginTop: 20
   },
   botm: {
-    flex: 1,
+    marginTop: 40,
+    bottom: 0,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -202,19 +200,9 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 30,
   },
-
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 10,
-  },
-  input: {
-    flex: 1,
-    fontSize: 16,
-  },
-  iconContainer: {
-    position: 'absolute',
-    right: 10,
-    padding: 5,
+  txtview: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
 });
